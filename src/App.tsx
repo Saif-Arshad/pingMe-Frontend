@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import socketIO from 'socket.io-client';
+import LoginMain from './pages/Login/LoginMain';
+import SignInSignUp from './pages/Login/LoginMain';
 
 interface Message {
   text: string;
@@ -29,7 +31,7 @@ function App() {
   }, []);
 
   const messageHandler = () => {
-    if (!socket) return; 
+    if (!socket) return;
 
     socket.emit('message_send', {
       text: message,
@@ -37,12 +39,12 @@ function App() {
       time: `${new Date(new Date().setHours(new Date().getHours() + 1)).getHours()}:${new Date(new Date().setMinutes(new Date().getMinutes() + 1)).getMinutes()}:${new Date().getSeconds()}`,
       socketID: socket.id,
     });
-    setMessage(''); 
+    setMessage('');
   };
 
   return (
     <>
-      <div className='flex flex-col w-96 mx-auto mt-11 items-start'>
+      {/* <div className='flex flex-col w-96 mx-auto mt-11 items-start'>
         <input
           type="text"
           value={message}
@@ -65,7 +67,9 @@ function App() {
             <p><small>Socket ID: {item.socketID}</small></p>
           </div>
         ))}
-      </div>
+          
+      </div> */}
+      <SignInSignUp />
     </>
   );
 }
