@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import { User, Lock, Mail } from 'lucide-react';
 import "../../components/styles/Login.scss";
 import { useFormik } from 'formik';
+import { useUser } from '../../customHooks/useUser';
 import * as Yup from 'yup';
 const SignInSignUp = () => {
     const loginValidationSchema = Yup.object({
@@ -19,12 +20,13 @@ const SignInSignUp = () => {
             .email('Invalid email address')
             .required('Email is required'),
         userName: Yup.string()
+            .matches(/^\S*$/, 'User Name cannot contain spaces') // Ensures no spaces
             .required('User Name is required'),
         password: Yup.string()
             .min(6, 'Password must be at least 6 characters')
             .required('Password is required'),
     });
-
+    const { registerUser } = useUser();
     const loginFormik = useFormik({
         initialValues: {
             Credential: '',
@@ -46,8 +48,7 @@ const SignInSignUp = () => {
         },
         validationSchema: signupValidationSchema,
         onSubmit: (values) => {
-            console.log('Signup form values:', values);
-            // Add your signup logic here
+            registerUser(values)
         },
     });
     useEffect(() => {
