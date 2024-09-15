@@ -1,9 +1,55 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import React, { useEffect } from 'react';
-import { User, Lock } from 'lucide-react';
+import { User, Lock, Mail } from 'lucide-react';
 import "../../components/styles/Login.scss";
-
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 const SignInSignUp = () => {
+    const loginValidationSchema = Yup.object({
+        Credential: Yup.string()
+            .required('Email or Username is required'),
+        password: Yup.string()
+            .min(6, 'Password must be at least 6 characters')
+            .required('Password is required'),
+    });
+
+    // Formik validation schema for signup form
+    const signupValidationSchema = Yup.object({
+        email: Yup.string()
+            .email('Invalid email address')
+            .required('Email is required'),
+        userName: Yup.string()
+            .required('User Name is required'),
+        password: Yup.string()
+            .min(6, 'Password must be at least 6 characters')
+            .required('Password is required'),
+    });
+
+    const loginFormik = useFormik({
+        initialValues: {
+            Credential: '',
+            password: '',
+        },
+        validationSchema: loginValidationSchema,
+        onSubmit: (values) => {
+            console.log('Login form values:', values);
+            // Add your login logic here
+        },
+    });
+
+    // Formik for signup form
+    const signupFormik = useFormik({
+        initialValues: {
+            email: '',
+            userName: '',
+            password: '',
+        },
+        validationSchema: signupValidationSchema,
+        onSubmit: (values) => {
+            console.log('Signup form values:', values);
+            // Add your signup logic here
+        },
+    });
     useEffect(() => {
         const sign_in_btn = document.querySelector("#sign-in-btn");
         const sign_up_btn = document.querySelector("#sign-up-btn");
@@ -39,35 +85,97 @@ const SignInSignUp = () => {
         <div className="container">
             <div className="forms-container">
                 <div className="signin-signup">
-                    <form action="#" className="sign-in-form">
+                    <form onSubmit={loginFormik.handleSubmit} className="sign-in-form">
                         <h2 className="title">Welcome Back</h2>
-                        <div className="input-field">
-                            <User className="icon" />
-                            <input type="text" placeholder="Username or Email" />
+                        <div className='flex flex-col w-full'>
 
+                            <div className="input-field">
+                                <User className="icon" />
+                                <input type="text" placeholder="Username or Email"
+                                    name='Credential'
+                                    value={loginFormik.values.Credential}
+                                    onChange={loginFormik.handleChange}
+                                    onBlur={loginFormik.handleBlur}
+                                />
+
+                            </div>
+                            {loginFormik.touched.Credential && loginFormik.errors.Credential ? (
+                                <div className="text-red-500 text-xs italic">{loginFormik.errors.Credential}</div>
+                            ) : null}
                         </div>
-                        <div className="input-field">
-                            <Lock className="icon" />
-                            <input type="password" placeholder="Password" />
+                        <div className='flex flex-col w-full'>
+
+                            <div className="input-field">
+                                <Lock className="icon" />
+                                <input type="password" placeholder="Password"
+                                    name='password'
+                                    value={loginFormik.values.password}
+                                    onChange={loginFormik.handleChange}
+                                    onBlur={loginFormik.handleBlur}
+                                />
+                            </div>
+                            {loginFormik.touched.password && loginFormik.errors.password ? (
+                                <div className="text-red-500 text-xs italic">{loginFormik.errors.password}</div>
+                            ) : null}
                         </div>
-                        <div className='w-9/12 items-start mt-2'>
+                        <div className='w-full items-start mt-2'>
                             <input type="submit" value="Login" className="btn solid" />
                         </div>
                         {/* <p className="social-text">Or Sign in with social platforms</p> */}
                         {/* Add social icons here */}
                     </form>
 
-                    <form action="#" className="sign-up-form">
+                    <form onSubmit={signupFormik.handleSubmit} className="sign-up-form">
                         <h2 className="title">Join Us</h2>
-                        <div className="input-field">
-                            <User className="icon" />
-                            <input type="text" placeholder="Username or Email" />
+                        <div className='flex flex-col w-full'>
+
+                            <div className="input-field">
+                                <User className="icon" />
+                                <input type="text" placeholder="Username"
+                                    name='userName'
+                                    value={signupFormik.values.userName}
+                                    onChange={signupFormik.handleChange}
+                                    onBlur={signupFormik.handleBlur}
+                                />
+                            </div>
+                            {signupFormik.touched.userName && signupFormik.errors.userName ? (
+                                <div className="text-red-500 text-xs italic">{signupFormik.errors.userName}</div>
+                            ) : null}
                         </div>
-                        <div className="input-field">
-                            <Lock className="icon" />
-                            <input type="password" placeholder="Password" />
+                        <div className='flex flex-col w-full'>
+
+                            <div className="input-field">
+                                <Mail className="icon" />
+                                <input type="email" placeholder="Email"
+                                    name='email'
+                                    value={signupFormik.values.email}
+                                    onChange={signupFormik.handleChange}
+                                    onBlur={signupFormik.handleBlur}
+                                />
+
+                            </div>
+                            {signupFormik.touched.email && signupFormik.errors.email ? (
+                                <div className="text-red-500 text-xs italic">{signupFormik.errors.email}</div>
+                            ) : null}
                         </div>
-                        <div className='w-9/12 items-start mt-2'>
+                        <div className='flex flex-col w-full'>
+
+                            <div className="input-field">
+                                <Lock className="icon" />
+                                <input
+                                    type="password"
+                                    name="password"
+                                    placeholder="Password"
+                                    value={signupFormik.values.password}
+                                    onChange={signupFormik.handleChange}
+                                    onBlur={signupFormik.handleBlur}
+                                />
+                            </div>
+                            {signupFormik.touched.password && signupFormik.errors.password ? (
+                                <div className="text-red-500 text-xs italic">{signupFormik.errors.password}</div>
+                            ) : null}
+                        </div>
+                        <div className='w-full items-start mt-2'>
                             <input type="submit" className="btn" value="Sign up" />
                         </div>
                         {/* <p className="social-text">Or Sign up with social platforms</p> */}
