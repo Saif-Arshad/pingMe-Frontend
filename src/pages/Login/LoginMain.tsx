@@ -26,7 +26,7 @@ const SignInSignUp = () => {
             .min(6, 'Password must be at least 6 characters')
             .required('Password is required'),
     });
-    const { registerUser } = useUser();
+    const { registerUser, loading } = useUser();
     const loginFormik = useFormik({
         initialValues: {
             Credential: '',
@@ -47,14 +47,14 @@ const SignInSignUp = () => {
             password: '',
         },
         validationSchema: signupValidationSchema,
-        onSubmit: (values) => {
-            registerUser(values)
+        onSubmit: (values,action) => {
+            registerUser(values,action)
         },
     });
     useEffect(() => {
         const sign_in_btn = document.querySelector("#sign-in-btn");
         const sign_up_btn = document.querySelector("#sign-up-btn");
-        const container = document.querySelector(".container");
+        const container = document.querySelector(".container1");
         // @ts-expect-error  
         sign_up_btn.addEventListener("click", () => {
             // @ts-expect-error  
@@ -83,7 +83,7 @@ const SignInSignUp = () => {
     }, []);
 
     return (
-        <div className="container">
+        <div className="container1">
             <div className="forms-container">
                 <div className="signin-signup">
                     <form onSubmit={loginFormik.handleSubmit} className="sign-in-form">
@@ -177,7 +177,7 @@ const SignInSignUp = () => {
                             ) : null}
                         </div>
                         <div className='w-full items-start mt-2'>
-                            <input type="submit" className="btn" value="Sign up" />
+                            <input type="submit" disabled={loading} className="btn" value={` ${loading ? "Joining..." : "Sign up"}`} />
                         </div>
                         {/* <p className="social-text">Or Sign up with social platforms</p> */}
                         {/* Add social icons here */}
