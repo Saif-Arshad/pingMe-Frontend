@@ -110,7 +110,11 @@ const SignInSignUp = () => {
             <div className="forms-container">
                 <div className="signin-signup">
                     <form onSubmit={loginFormik.handleSubmit} className="sign-in-form">
-                        <h2 className="title">Welcome Back</h2>
+                        <h2 className="title">Welcome
+                            <span>
+                                Back
+                            </span>
+                        </h2>
                         <div className='flex flex-col w-full'>
 
                             <div className="input-field">
@@ -150,7 +154,11 @@ const SignInSignUp = () => {
                     </form>
 
                     <form onSubmit={signupFormik.handleSubmit} className="sign-up-form">
-                        <h2 className="title">Join Us</h2>
+                        <h2 className="title">Join
+                            <span>
+                                Us
+                            </span>
+                        </h2>
                         <div className='flex flex-col w-full'>
 
                             <div className="input-field">
@@ -163,7 +171,7 @@ const SignInSignUp = () => {
                                 />
                             </div>
                             {signupFormik.touched.userName && (signupFormik.errors.userName || userNameAvalibility.length) ? (
-                                <div className={`${userNameAvalibility == "Username is available" ? "text-green-700" : "text-red-500"} text-xs italic`}>{signupFormik.errors.userName ? signupFormik.errors.userName : userNameAvalibility}</div>
+                                <div className={`${(userNameAvalibility === "Username is available" && !signupFormik.errors.userName) ? "text-green-700" : "text-red-500"} text-xs italic`}>{signupFormik.errors.userName ? signupFormik.errors.userName : userNameAvalibility}</div>
                             ) : null}
                         </div>
                         <div className='flex flex-col w-full'>

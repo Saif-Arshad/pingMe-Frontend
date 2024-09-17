@@ -62,11 +62,17 @@ form.sign-in-form {
 
 .title {
     font-size: 2rem;
-    color: #007ea7;
+    color: #21978B;
     margin-bottom: 10px;
     font-weight: 500;
     text-align: start;
+    font-family: "heading_flexa";
     width: 95%;
+
+    span {
+        // font-family: "italic_eiko";
+        margin-left: 7px;
+    }
 }
 
 .input-field {
@@ -140,7 +146,7 @@ form.sign-in-form {
 
 .btn {
     width: 150px;
-    background-color: #007ea7;
+    background-color: #21978B;
     border: none;
     outline: none;
     height: 49px;
@@ -154,7 +160,7 @@ form.sign-in-form {
 }
 
 .btn:hover {
-    background-color: #4d84e2;
+    background-color: #10544d;
 }
 
 .panels-container {
@@ -175,7 +181,7 @@ form.sign-in-form {
     top: -10%;
     right: 48%;
     transform: translateY(-50%);
-    background-image: linear-gradient(-45deg, #007ea7 0%, #04befe 100%);
+    background-image: linear-gradient(-45deg, #21978B 0%, #04befe 100%);
     transition: 1.8s ease-in-out;
     border-radius: 50%;
     z-index: 6;
@@ -214,6 +220,7 @@ form.sign-in-form {
 
 .panel h3 {
     font-weight: 600;
+    font-family: "italic_eiko";
     line-height: 1;
     font-size: 1.5rem;
 }
@@ -221,6 +228,7 @@ form.sign-in-form {
 .panel p {
     font-size: 0.95rem;
     padding: 0.7rem 0;
+    // font-family: "discription_neuw";
 }
 
 .btn.transparent {

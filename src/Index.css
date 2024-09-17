@@ -10,3 +10,18 @@ input:-webkit-autofill:active {
     -webkit-text-fill-color: black !important;
     -webkit-text-stroke-width: 0.2px;
 }
+
+@font-face {
+    font-family: "italic_eiko";
+    src: url(./assets/fonts/Eiko-italic/PPEiko-LightItalic.otf);
+}
+
+@font-face {
+    font-family: "heading_flexa";
+    src: url(./assets/fonts/Flexa-headings/GT-Flexa-Extended-Bold-Trial.otf);
+}
+
+@font-face {
+    font-family: "discription_neuw";
+    src: url(./assets/fonts/Neue-Montreal-description/PPNeueMontreal-Book.otf);
+}
