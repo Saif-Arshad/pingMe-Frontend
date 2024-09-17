@@ -11,6 +11,17 @@ input:-webkit-autofill:active {
     -webkit-text-stroke-width: 0.2px;
 }
 
+@layer utilities {
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+
+    .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+}
+
 @font-face {
     font-family: "italic_eiko";
     src: url(./assets/fonts/Eiko-italic/PPEiko-LightItalic.otf);

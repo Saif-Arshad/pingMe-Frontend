@@ -1,8 +1,12 @@
 import React from 'react'
+import ChatSideBar from '../../components/chatSideBar'
 
 function MainChat() {
     return (
-        <div>MainChat</div>
+        <div className='flex'>
+            <ChatSideBar />
+
+        </div>
     )
 }
 
