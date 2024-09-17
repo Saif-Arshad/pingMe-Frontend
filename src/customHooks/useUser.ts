@@ -30,11 +30,28 @@ export const useUser = () => {
 
         }
     }
+    const loginUser = async (data: any, action: any) => {
+        console.log("🚀 ~ loginUser ~ data:", data)
+        try {
+            SetLoading(true)
+            const res = await axiosInstance.post("/api/users/login", data)
+            if (res) {
+                toast.success("Login successfully")
+                navigate("/chat")
+                action.resetForm()
+                localStorage.setItem("pingMe_token", res.data.token)
+            }
+        } catch (error: any) {
+            console.log("🚀 ~ registerUser ~ error:", error)
+            toast.error(error.response.data.message ? error.response.data.message : "Something went wrong")
+        } finally {
+            SetLoading(false)
 
-
-
+        }
+    }
     return {
         registerUser,
-        loading
+        loading,
+        loginUser,
     }
 }

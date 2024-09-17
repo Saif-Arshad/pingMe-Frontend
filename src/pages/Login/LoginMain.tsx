@@ -5,7 +5,11 @@ import "../../components/styles/Login.scss";
 import { useFormik } from 'formik';
 import { useUser } from '../../customHooks/useUser';
 import * as Yup from 'yup';
+import useDebounce from '../../customHooks/useDebounce';
+import axiosInstance from '../../utils/axios';
 const SignInSignUp = () => {
+    const [userNameAvalibility, setUserNameAvalibility] = React.useState("")
+    console.log("🚀 ~ SignInSignUp ~ userNameAvalibility:", userNameAvalibility)
     const loginValidationSchema = Yup.object({
         Credential: Yup.string()
             .required('Email or Username is required'),
@@ -26,16 +30,15 @@ const SignInSignUp = () => {
             .min(6, 'Password must be at least 6 characters')
             .required('Password is required'),
     });
-    const { registerUser, loading } = useUser();
+    const { registerUser, loading, loginUser } = useUser();
     const loginFormik = useFormik({
         initialValues: {
             Credential: '',
             password: '',
         },
         validationSchema: loginValidationSchema,
-        onSubmit: (values) => {
-            console.log('Login form values:', values);
-            // Add your login logic here
+        onSubmit: (values, action) => {
+            loginUser(values, action)
         },
     });
 
@@ -47,8 +50,8 @@ const SignInSignUp = () => {
             password: '',
         },
         validationSchema: signupValidationSchema,
-        onSubmit: (values,action) => {
-            registerUser(values,action)
+        onSubmit: (values, action) => {
+            registerUser(values, action)
         },
     });
     useEffect(() => {
@@ -81,6 +84,26 @@ const SignInSignUp = () => {
             });
         };
     }, []);
+    const debouncedQuery = useDebounce(signupFormik.values.userName, 400);
+    useEffect(() => {
+        if (debouncedQuery) {
+            const checkUserName = async () => {
+                try {
+                    const res = await axiosInstance.post('/api/users/checkname', {
+                        userName: debouncedQuery
+                    });
+                    console.log("🚀 ~ useEffect ~ res:", res);
+                    if (res) {
+                        setUserNameAvalibility(res?.data.message);
+                    }
+                } catch (error) {
+                    console.log("🚀 ~ useEffect ~ error:", error);
+                }
+            };
+
+            checkUserName();
+        }
+    }, [debouncedQuery]);
 
     return (
         <div className="container1">
@@ -120,7 +143,7 @@ const SignInSignUp = () => {
                             ) : null}
                         </div>
                         <div className='w-full items-start mt-2'>
-                            <input type="submit" value="Login" className="btn solid" />
+                            <input type="submit" disabled={loading} className="btn" value={` ${loading ? "Verifying..." : "Login"}`} />
                         </div>
                         {/* <p className="social-text">Or Sign in with social platforms</p> */}
                         {/* Add social icons here */}
@@ -139,8 +162,8 @@ const SignInSignUp = () => {
                                     onBlur={signupFormik.handleBlur}
                                 />
                             </div>
-                            {signupFormik.touched.userName && signupFormik.errors.userName ? (
-                                <div className="text-red-500 text-xs italic">{signupFormik.errors.userName}</div>
+                            {signupFormik.touched.userName && (signupFormik.errors.userName || userNameAvalibility.length) ? (
+                                <div className={`${userNameAvalibility == "Username is available" ? "text-green-700" : "text-red-500"} text-xs italic`}>{signupFormik.errors.userName ? signupFormik.errors.userName : userNameAvalibility}</div>
                             ) : null}
                         </div>
                         <div className='flex flex-col w-full'>
