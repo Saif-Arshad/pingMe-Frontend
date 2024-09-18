@@ -2,6 +2,10 @@
 // import socketIO from 'socket.io-client';
 // import LoginMain from './pages/Login/LoginMain';
 import SignInSignUp from './pages/Login/LoginMain';
+import { getCurrentUser } from './store/features/user.slice';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { ThunkDispatch } from '@reduxjs/toolkit';
 import {
   BrowserRouter as Router,
   Routes,
@@ -9,6 +13,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import MainChat from './pages/chat/MainChat';
+import ProtectedRoutes from './utils/protectedRoutes';
 // interface Message {
 //   text: string;
 //   id: string;
@@ -17,6 +22,15 @@ import MainChat from './pages/chat/MainChat';
 // }
 
 function App() {
+  const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
+  const userToken = localStorage.getItem('pingMe_token');
+  useEffect(() => {
+    if (userToken) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      dispatch(getCurrentUser(userToken))
+    }
+  }, [dispatch, userToken]);
   // const [message, setMessage] = useState('');
   // const [allMessage, setAllMessage] = useState<Message[]>([]);
   // const [socket, setSocket] = useState<any>(null);
@@ -82,9 +96,13 @@ function App() {
             element={<Navigate to="/account" replace />}
           />
           <Route
-            path="/chat"
-            element={<MainChat />}
-          />
+            element={<ProtectedRoutes />}>
+            <Route
+              path="/chat"
+              element={<MainChat />}
+            />
+
+          </Route>
           <Route
             path="/account"
             element={<SignInSignUp />}
