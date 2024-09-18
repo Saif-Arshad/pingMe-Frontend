@@ -1,4 +1,3 @@
-import React from 'react'
 import ChatSideBar from '../../components/chatSideBar'
 
 function MainChat() {
