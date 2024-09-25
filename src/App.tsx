@@ -13,7 +13,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import MainChat from './pages/chat/MainChat';
-import ProtectedRoutes from './utils/protectedRoutes';
+import { ProtectedRoutes } from './utils/protectedRoutes';
 // interface Message {
 //   text: string;
 //   id: string;
@@ -93,19 +93,16 @@ function App() {
         <Routes>
           <Route
             path="/"
-            element={<Navigate to="/account" replace />}
+            element={<Navigate to={userToken ? "/chat" : "/account"} replace />}
           />
-          <Route
-            element={<ProtectedRoutes />}>
-            <Route
-              path="/chat"
-              element={<MainChat />}
-            />
 
+          <Route element={<ProtectedRoutes />}>
+            <Route path="/chat" element={<MainChat />} />
           </Route>
+
           <Route
             path="/account"
-            element={<SignInSignUp />}
+            element={userToken ? <Navigate to="/chat" replace /> : <SignInSignUp />}
           />
         </Routes>
       </Router>

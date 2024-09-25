@@ -1,11 +1,15 @@
 import { useState, useEffect } from 'react';
 
 function useDebounce(value: any, delay: any) {
-    const [debouncedValue, setDebouncedValue] = useState(value);
+    const [debouncedValue, setDebouncedValue] = useState(
+        typeof value === 'string' ? value.toLowerCase() : value
+    );
 
     useEffect(() => {
         const handler = setTimeout(() => {
-            setDebouncedValue(value);
+            setDebouncedValue(
+                typeof value === 'string' ? value.toLowerCase() : value
+            );
         }, delay);
 
         return () => {

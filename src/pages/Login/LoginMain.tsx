@@ -9,7 +9,26 @@ import useDebounce from '../../customHooks/useDebounce';
 import axiosInstance from '../../utils/axios';
 const SignInSignUp = () => {
     const [userNameAvalibility, setUserNameAvalibility] = React.useState("")
-    console.log("🚀 ~ SignInSignUp ~ userNameAvalibility:", userNameAvalibility)
+
+    const userImages = [
+        "https://res.cloudinary.com/di6r722sv/image/upload/v1727259040/1_zswasp.png",
+        "https://res.cloudinary.com/di6r722sv/image/upload/v1727259167/2_zqq4dm.png",
+        "https://res.cloudinary.com/di6r722sv/image/upload/v1727259169/8_niu3zz.png",
+        "https://res.cloudinary.com/di6r722sv/image/upload/v1727259169/4_qzklzk.png",
+        "https://res.cloudinary.com/di6r722sv/image/upload/v1727259168/3_wc7yyl.png",
+        "https://res.cloudinary.com/di6r722sv/image/upload/v1727259169/6_v3elje.png",
+        "https://res.cloudinary.com/di6r722sv/image/upload/v1727259169/5_xtaizc.png",
+        "https://res.cloudinary.com/di6r722sv/image/upload/v1727259169/7_nviboy.png",
+        "https://res.cloudinary.com/di6r722sv/image/upload/v1727259171/9_js8yf9.png",
+        "https://res.cloudinary.com/di6r722sv/image/upload/v1727259182/10_eskkp2.png"
+
+    ]
+    function getRandomImage() {
+        const randomIndex = Math.floor(Math.random() * userImages.length);
+        return userImages[randomIndex];
+    }
+    const randomImageLink = getRandomImage();
+    console.log("🚀 ~ SignInSignUp ~ randomImageLink:", randomImageLink)
     const loginValidationSchema = Yup.object({
         Credential: Yup.string()
             .required('Email or Username is required'),
@@ -51,7 +70,8 @@ const SignInSignUp = () => {
         },
         validationSchema: signupValidationSchema,
         onSubmit: (values, action) => {
-            registerUser(values, action)
+
+            registerUser(values, action, randomImageLink)
         },
     });
     useEffect(() => {

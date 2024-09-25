@@ -10,11 +10,15 @@ interface registerProps {
 export const useUser = () => {
     const [loading, SetLoading] = useState(false)
     const navigate = useNavigate()
-    const registerUser = async (data: registerProps, action: any) => {
-        console.log("🚀 ~ registerUser ~ data:", data)
+    const registerUser = async (data: registerProps, action: any, Image: string) => {
+        const payload = {
+            ...data,
+            profileImage: Image
+        }
         try {
+            console.log("🚀 ~ registerUser ~ payload:", payload)
             SetLoading(true)
-            const res = await axiosInstance.post("/api/users/register", data)
+            const res = await axiosInstance.post("/api/users/register", payload)
             console.log("🚀 ~ registerUser ~ res:", res)
             if (res) {
                 toast.success("User registered successfully")
