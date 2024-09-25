@@ -53,9 +53,24 @@ export const useUser = () => {
 
         }
     }
+    const logOutUser = async () => {
+        try {
+            SetLoading(true)
+            const res = await axiosInstance.post("/api/users/log-out")
+            if (res) {
+                toast.success("Logout successfully")
+                localStorage.removeItem("pingMe_token")
+                window.location.reload()
+            }
+        } catch (error: any) {
+            console.log("🚀 ~ registerUser ~ error:", error)
+            toast.error(error.response.data.message ? error.response.data.message : "Something went wrong")
+        }
+    }
     return {
         registerUser,
         loading,
         loginUser,
+        logOutUser
     }
 }

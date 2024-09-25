@@ -6,20 +6,22 @@ const axiosInstance = axios.create({
 });
 
 // Add a request interceptor
-// axiosInstance.interceptors.request.use(
-//     (config) => {
-//         const token = cookies().get("cookie-token")?.value;
-//         if (token) {
-//             config.headers.Authorization = `Bearer ${token}`;
-//         }
+axiosInstance.interceptors.request.use(
+    (config) => {
+        // const token = cookies().get("cookie-token")?.value;
+        const token = localStorage.getItem('pingMe_token');
 
-//         return config;
-//     },
-//     (error) => {
-//         // Handle the request error
-//         return Promise.reject(error);
-//     }
-// );
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+
+        return config;
+    },
+    (error) => {
+        // Handle the request error
+        return Promise.reject(error);
+    }
+);
 
 // Add a response interceptor
 axiosInstance.interceptors.response.use(

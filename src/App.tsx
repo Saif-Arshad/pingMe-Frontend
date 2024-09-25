@@ -6,6 +6,7 @@ import { getCurrentUser } from './store/features/user.slice';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { ThunkDispatch } from '@reduxjs/toolkit';
+import UserProfile from './pages/profile/UserProfile';
 import {
   BrowserRouter as Router,
   Routes,
@@ -99,10 +100,13 @@ function App() {
           <Route element={<ProtectedRoutes />}>
             <Route path="/chat" element={<MainChat />} />
           </Route>
-
           <Route
             path="/account"
             element={userToken ? <Navigate to="/chat" replace /> : <SignInSignUp />}
+          />
+          <Route
+            path="/:id"
+            element={!userToken ? <Navigate to="/account" replace /> : <UserProfile />}
           />
         </Routes>
       </Router>
