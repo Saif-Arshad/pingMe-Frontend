@@ -9,37 +9,40 @@ function ChatSideBar() {
     const { logOutUser } = useUser()
     return (
         <div
-            className='max-h-screen min-h-screen  bg-[#FAFAFA] w-72 p-3 py-7 pb-5 flex flex-col justify-between'
+            className='max-h-screen min-h-screen  bg-[#FAFAFA] w-72 2xl:w-80 p-3 py-7 pb-5 flex flex-col justify-between'
         >
             <div className='flex flex-col'>
 
                 <div className='flex flex-col w-full'
                 >
-                    <img
-                        className=' h-20 w-20 mix-blend-multiply'
-                        src="/src/assets/icons/blue-robot-mascot-logo-icon-design_675467-55_1__Traced_-removebg-preview.png"
-                    />
-                    <div className='relative  mt-7 flex items-center'>
+                    {/* <img
+                        className=' h-auto w-20  mix-blend-multiply'
+                        src="/src/assets/icons/logo.png"
+                    /> */}
+                    <div className='relative  mb-3 flex items-center'>
                         <input type="text"
-                            className='w-full p-2  pl-11 focus:outline-[#21978B] text-black placeholder:text-[#C7C3C3] rounded-2xl border border-[#C7C3C3] bg-transparent'
+                            className='w-full p-2  pl-11 focus:outline-[#C7C3C3] text-black placeholder:text-[#C7C3C3] rounded-2xl border border-[#4b176b] bg-transparent'
                             name="" id="" placeholder='Search people or message' />
                         <Search className='absolute  text-[#C7C3C3] left-2' />
                     </div>
                 </div>
                 <div className='message no-scrollbar overflow-y-auto h-[50vh] mt-4'>
 
-                    <div className='flex gap-x-3 bg-[#cfebe8] cursor-pointer p-2 rounded-xl mb-2 relative'>
-                        <img
-                            className=' h-10 w-10 mix-blend-multiply'
-                            src="/src/assets/icons/blue-robot-mascot-logo-icon-design_675467-55_1__Traced_-removebg-preview.png"
-                        />
+                    <div className='flex gap-x-1 cursor-pointer p-2 rounded-xl mb-2 relative hover:bg-purple-100'>
+                        <div className='relative'>
 
-                        <div className='flex flex-col gap-0'>
-                            <p className='text-black font-semibold text-lg'>NeoBot</p>
-                            <p className='text-sm text-[#4F5665]'>AI at Your Fingertips</p>
+                            <img
+                                className=' h-12 w-auto mix-blend-multiply'
+                                src="/src/assets/icons/logo.png"
+                            />
+                            {/* <div className="absolute inset-0 w-full h-full border-2 border-transparent rounded-full animate-blink"></div> */}
+                            <div className="w-3 h-3  rounded-full bg-green-500 absolute right-1 top-0">
+                            </div>
+
                         </div>
-                        <div className="w-3 h-3  rounded-full bg-green-500 animate-pulse absolute right-2 top-3">
-                            <div className="absolute inset-0 w-full h-full border-2 border-transparent rounded-full animate-blink"></div>
+                        <div className='flex flex-col gap-0'>
+                            <p className='text-black font-semibold text-lg'>Ping Us</p>
+                            <p className='text-xs text-[#4F5665]'>Your Smart Chat Companion!</p>
                         </div>
 
                     </div>
@@ -81,7 +84,7 @@ function ChatSideBar() {
                         <button
                             onClick={logOutUser}
                             className="group flex items-center justify-start
-   w-11 h-11 bg-cyan-500 rounded-full cursor-pointer
+   w-11 h-11 bg-[#4b176b] rounded-full cursor-pointer
    1">
                             <div className="flex items-center justify-center w-full
 transition-all duration-300 group-hover:justify-start

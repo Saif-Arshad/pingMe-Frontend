@@ -7,13 +7,13 @@ export default {
   theme: {
     extend: {
       keyframes: {
-        blink: {
-          '0%, 100%': { borderColor: 'transparent' },
-          '50%': { borderColor: '#75e7db' }, // Your secondary color
+        loader: {
+          '0%': { backgroundPosition: '-800px 0px' },
+          '100%': { backgroundPosition: '800px 0px' },
         },
       },
       animation: {
-        blink: 'blink 1s infinite', // Adjust the duration as needed
+        loader: 'loader 3s infinite linear',
       },
     },
   },
