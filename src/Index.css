@@ -75,6 +75,10 @@ input:-webkit-autofill:active {
     color: #1e90ff;
 }
 
+/* .response-content {
+    display: flex;
+} */
+
 .response-content p {
     margin: 0.5rem 0;
     line-height: 1.5;

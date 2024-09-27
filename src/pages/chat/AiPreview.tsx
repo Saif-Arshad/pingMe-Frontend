@@ -2,10 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import AiImage from '../../assets/icons/logo.png';
 import ChatLoader from '../../components/ChatLoader';
-
-
-
-
+import useTypingEffect from '../../customHooks/useTypingEffect';
 // Function to format response with custom HTML
 const formatResponse = (response: string): string => {
     const formattedResponse = response
@@ -18,21 +15,22 @@ const formatResponse = (response: string): string => {
 };
 
 function AiPreview({ allMessage, chat }: any) {
-    console.log("🚀 ~ AiPreview ~ allMessage:", allMessage)
     const [chatData, setChatData] = useState<any[]>([]);
-    console.log("🚀 ~ AiPreview ~ chatData:", chatData)
     const users = useSelector((state: any) => state.user);
     const bottomRef = useRef<null | HTMLDivElement>(null);
+    // const [showCursor, setShowCursor] = useState(true);
+    // Use the typing effect hook
+    const textToShow = useTypingEffect(allMessage?.response || "", 35, true);
 
     useEffect(() => {
         if (allMessage) {
             setChatData((prev) => {
-                const index = prev.findIndex((item: any) =>
-                    item.prompt === allMessage.prompt &&
-                    item.response === "" &&
-                    item.isLoading === true
+                const index = prev.findIndex(
+                    (item: any) =>
+                        item.prompt === allMessage.prompt &&
+                        item.response === "" &&
+                        item.isLoading === true
                 );
-                console.log("🚀 ~ setChatData ~ index:", index)
 
                 if (index !== -1) {
                     const updatedChatData = [...prev];
@@ -43,8 +41,13 @@ function AiPreview({ allMessage, chat }: any) {
                 return [...prev, allMessage];
             });
         }
-    }, [allMessage]);
+        // const cursorInterval = setInterval(() => {
+        //     setShowCursor((prev) => !prev);
+        // }, 500);
 
+        // return () => clearInterval(cursorInterval);
+
+    }, [allMessage]);
 
     useEffect(() => {
         if (chatData.length > 1) {
@@ -82,7 +85,14 @@ function AiPreview({ allMessage, chat }: any) {
                                 <ChatLoader />
                             ) : (
                                 <div className="prose prose-blue max-w-none">
-                                    <p dangerouslySetInnerHTML={{ __html: formatResponse(item.response) }}></p>
+                                    {/* Display animated response text */}
+                                    <p dangerouslySetInnerHTML={{ __html: formatResponse(textToShow) }}></p>
+
+                                    {/* {showCursor && (
+                                            <div className="flex justify-start">
+                                                <span className="mt-1 inline-block h-3 w-3 rounded-full bg-black dark:bg-white animate-blink"></span>
+                                            </div>
+                                        )} */}
                                 </div>
                             )}
                         </div>

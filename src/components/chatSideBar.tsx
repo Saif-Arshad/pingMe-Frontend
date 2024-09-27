@@ -2,8 +2,12 @@ import { Search } from 'lucide-react'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { useUser } from '../customHooks/useUser'
+import aiImage from '../assets/icons/logo.png'
+import { useLocation } from 'react-router-dom'
 function ChatSideBar() {
     const users = useSelector((state: any) => state.user)
+    const location = useLocation()
+    const isChatRoute = location.pathname === '/chat'
     console.log("🚀 ~ ChatSideBar ~ users:", users)
     // const isLoading = users.currentUser.isLoading
     const { logOutUser } = useUser()
@@ -28,12 +32,12 @@ function ChatSideBar() {
                 </div>
                 <div className='message no-scrollbar overflow-y-auto h-[50vh] mt-4'>
 
-                    <div className='flex gap-x-1 cursor-pointer p-2 rounded-xl mb-2 relative hover:bg-purple-100'>
+                    <div className={`flex gap-x-1 cursor-pointer p-2 rounded-xl mb-2 relative ${isChatRoute ? 'bg-purple-200' : "hover:bg-purple-100 "}`}>
                         <div className='relative'>
 
                             <img
                                 className=' h-12 w-auto mix-blend-multiply'
-                                src="/src/assets/icons/logo.png"
+                                src={aiImage}
                             />
                             {/* <div className="absolute inset-0 w-full h-full border-2 border-transparent rounded-full animate-blink"></div> */}
                             <div className="w-3 h-3  rounded-full bg-green-500 absolute right-1 top-0">

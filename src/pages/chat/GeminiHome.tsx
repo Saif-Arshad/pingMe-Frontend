@@ -22,7 +22,7 @@ import {
 } from 'lucide-react';
 import ChatInput from '../../components/ChatInput';
 import AiPreview from './AiPreview';
-
+import aiImage from '../../assets/icons/logo.png'
 const data = {
     header: {
         title: 'Hello, There.',
@@ -135,7 +135,7 @@ const Main = ({ socket }: any) => {
                     <div className="mt-8 2xl:mt-12 mb-5 2xl:mb-8 font-medium text-gray-400 px-3">
                         <img
                             className='h-auto w-16 2xl:w-20 pb-3 2xl:pb-5 mix-blend-multiply'
-                            src="/src/assets/icons/logo.png"
+                            src={aiImage}
                         />
                         <p className="bg-clip-text font-bold text-4xl lg:text-5xl 2xl:text-6xl text-transparent bg-gradient-to-r from-[#5f4681] via-[#ff69b4] to-[#ff5546]">
                             {data.header.title}
