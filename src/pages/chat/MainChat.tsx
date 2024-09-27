@@ -1,11 +1,11 @@
 import ChatSideBar from '../../components/chatSideBar'
 import GeminiHome from './GeminiHome'
 
-function MainChat() {
+function MainChat({socket}:any) {
     return (
         <div className='flex max-h-screen'>
             <ChatSideBar />
-            <GeminiHome />
+            <GeminiHome socket={socket} />
         </div>
     )
 }

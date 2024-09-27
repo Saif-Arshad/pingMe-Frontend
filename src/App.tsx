@@ -1,9 +1,8 @@
-// import { useEffect, useState } from 'react';
-// import socketIO from 'socket.io-client';
+import { useEffect, useState } from 'react';
+import socketIO from 'socket.io-client';
 // import LoginMain from './pages/Login/LoginMain';
 import SignInSignUp from './pages/Login/LoginMain';
 import { getCurrentUser } from './store/features/user.slice';
-import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { ThunkDispatch } from '@reduxjs/toolkit';
 import UserProfile from './pages/profile/UserProfile';
@@ -34,23 +33,23 @@ function App() {
   }, [dispatch, userToken]);
   // const [message, setMessage] = useState('');
   // const [allMessage, setAllMessage] = useState<Message[]>([]);
-  // const [socket, setSocket] = useState<any>(null);
+  const [socket, setSocket] = useState<any>(null);
 
-  // useEffect(() => {
-  //   const newSocket = socketIO(`${import.meta.env.VITE_BACKEND_URL}`);
-  //   setSocket(newSocket);
+  // return () => {
+  //   newSocket.off('message_receive');
+  //   newSocket.disconnect();
+  // };
+  // newSocket.on('message_receive', (data: Message) => {
+  //   console.log("Data From Backend:", data);
+  //   setAllMessage((prev) => [...prev, data]);
+  // });
 
-  //   newSocket.on('message_receive', (data: Message) => {
-  //     console.log("Data From Backend:", data);
-  //     setAllMessage((prev) => [...prev, data]);
-  //   });
-
-  //   return () => {
-  //     newSocket.off('message_receive');
-  //     newSocket.disconnect();
-  //   };
-  // }, []);
-
+  useEffect(() => {
+    const newSocket = socketIO(`${import.meta.env.VITE_BACKEND_URL}`);
+    if (newSocket) {
+      setSocket(newSocket);
+    }
+  }, [])
   // const messageHandler = () => {
   //   if (!socket) return;
 
@@ -98,7 +97,7 @@ function App() {
           />
 
           <Route element={<ProtectedRoutes />}>
-            <Route path="/chat" element={<MainChat />} />
+            <Route path="/chat" element={<MainChat socket={socket} />} />
           </Route>
           <Route
             path="/account"

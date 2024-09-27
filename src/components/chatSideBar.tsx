@@ -9,7 +9,7 @@ function ChatSideBar() {
     const { logOutUser } = useUser()
     return (
         <div
-            className='max-h-screen min-h-screen  bg-[#FAFAFA] w-72 2xl:w-80 p-3 py-7 pb-5 flex flex-col justify-between'
+            className='max-h-screen min-h-screen  bg-[#FAFAFA] w-80 p-3 py-7 pb-5 flex flex-col justify-between'
         >
             <div className='flex flex-col'>
 
@@ -50,7 +50,7 @@ function ChatSideBar() {
                 </div>
             </div>
             {
-                users.isLoading ?
+                (users.isLoading) ?
                     <>
                         <div role="status" className="max-w-sm animate-pulse pl-3 flex items-center gap-2">
                             <div className=" bg-gray-200 h-10 w-10 rounded-full dark:bg-gray-700 "></div>
@@ -66,16 +66,16 @@ function ChatSideBar() {
                     </>
                     :
                     <div className='flex items-center justify-between'>
-                        <Link to={`/${users.currentUser.username}`}>
+                        <Link to={`/${users.currentUser && users.currentUser.username}`}>
                             <div className='pl-3 flex items-center cursor-pointer gap-2'>
 
                                 <img
                                     className='h-12 w-12 rounded-full object-contain'
-                                    src={users.currentUser.profileImage && users.currentUser.profileImage} alt="" />
+                                    src={users.currentUser && users.currentUser.profileImage} alt="" />
                                 <div className='flex flex-col gap-0'>
                                     <>
-                                        <p className='text-black font-semibold'>{users.currentUser.username}</p>
-                                        <p className='text-sm -mt-1 text-[#4F5665]'>@{users.currentUser.username}</p>
+                                        <p className='text-black font-semibold'>{users.currentUser && users.currentUser.username}</p>
+                                        <p className='text-sm -mt-1 text-[#4F5665]'>@{users.currentUser && users.currentUser.username}</p>
                                     </>
                                 </div>
                             </div>

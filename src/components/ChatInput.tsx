@@ -1,17 +1,15 @@
 import { Mic, Rocket } from 'lucide-react'
 import React from 'react'
-import { useAi } from '../customHooks/useAi'
-
-function ChatInput() {
-    // const { prompt, setPrompt } = useAi()
+function ChatInput({ setChat }: any) {
     const [message, setMessage] = React.useState('')
     const submitMessage = () => {
         if (!message) return
         console.log(message)
-        // setMessage('')
+        setChat(message)
+        setMessage('')
     }
     return (
-        <div className="flex items-center w-full justify-between gap-5 bg-gray-100 p-3 rounded-full">
+        <div className="flex items-center w-full h-[70px] justify-between gap-5 bg-gray-100 p-3 rounded-full">
             <input
                 type="text"
                 value={message}

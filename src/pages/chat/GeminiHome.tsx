@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import {
     MapPin,
     Lightbulb,
@@ -21,9 +21,8 @@ import {
     TrendingUp,
 } from 'lucide-react';
 import ChatInput from '../../components/ChatInput';
-import { useAi } from '../../customHooks/useAi';
+import AiPreview from './AiPreview';
 
-// JSON Data
 const data = {
     header: {
         title: 'Hello, There.',
@@ -54,61 +53,113 @@ const data = {
 };
 
 // Function to get random cards
-const getRandomCards = (cards: any) => {
-    const shuffled = cards.sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, 4);
+const getRandomCards = (cards: any, numberOfCards: number) => {
+    const shuffled = [...cards].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, numberOfCards);
 };
 
-const Main = () => {
-    const [randomCards, setRandomCards] = useState([]);
-    const [currentCard, setCurrentCard] = useState<any>("");
-    const { setPrompt } = useAi()
+const Main = ({ socket }: any) => {
+    const [randomCards, setRandomCards] = useState<any[]>([]);
+    const [currentCard, setCurrentCard] = useState<string>('');
+    const [allMessage, setAllMessage] = useState<any>();
+    const [numberOfCards, setNumberOfCards] = useState(4);
+    const [chat, setChat] = useState<string>('');
+    const [loading, setLoading] = useState(false);
+
     useEffect(() => {
-        if (currentCard.length > 0) {
-            setPrompt(currentCard);
+        if (currentCard) {
+            setChat(currentCard);
         }
-    }, [currentCard])
-    useEffect(() => {
-        setRandomCards(getRandomCards(data.cards));
+    }, [currentCard]);
+
+    useLayoutEffect(() => {
+        const updateNumberOfCards = () => {
+            const screenWidth = window.innerWidth;
+            if (screenWidth < 740) {
+                setNumberOfCards(2);
+            } else if (screenWidth < 1024) {
+                setNumberOfCards(3);
+            } else {
+                setNumberOfCards(4);
+            }
+        };
+
+        updateNumberOfCards();
+        window.addEventListener('resize', updateNumberOfCards);
+
+        return () => window.removeEventListener('resize', updateNumberOfCards);
     }, []);
 
+    useEffect(() => {
+        const randomCard = getRandomCards(data.cards, numberOfCards);
+        setRandomCards(randomCard);
+    }, [numberOfCards]);
+
+    useEffect(() => {
+        if (socket && chat.length > 0) {
+            setLoading(true);
+            setAllMessage(
+                {
+                    prompt: chat,
+                    isLoading: true,
+                    response: "",
+                },
+            );
+            socket.emit('generate_content', { chat });
+
+            socket.on('content_generated', (data: any) => {
+                setAllMessage(
+                    data
+                );
+                setLoading(false);
+            });
+
+            socket.on('error', (error: any) => {
+                console.error(error.message);
+                setLoading(false);
+            });
+
+            return () => {
+                socket.off('content_generated');
+                socket.off('error');
+            };
+        }
+    }, [chat, socket]);
+
     return (
-        <div className="flex flex-col max-h-screen mb-4 mt-14 relative w-full ">
-
-
-            <div className=' pl-20 2xl:pl-32'>
-                <div className="mt-12 mb-8 font-medium text-gray-400 px-3">
-                    <img
-                        className=' h-auto w-20 pb-5  mix-blend-multiply'
-                        src="/src/assets/icons/logo.png"
-                    />
-                    <p
-                        className="bg-clip-text font-bold text-4xl 2xl:text-6xl text-transparent bg-gradient-to-r from-[#5f4681] via-[#ff69b4] to-[#ff5546]">
-                        {data.header.title}
-                    </p>
-
-                    <p className="text-4xl 2xl:text-5xl text-[#c4c7c5] mt-2">{data.header.subtitle}</p>
-                </div>
-
-                <div className="flex gap-4 p-3 mt-10">
-                    {randomCards.map((card: any, index) => (
-                        <div
-                            onClick={() => setCurrentCard(card.text)}
-                            key={index}
-                            className="min-h-[150px] w-[300px] group p-4 bg-slate-100 rounded-lg relative cursor-pointer hover:bg-slate-200 flex flex-col  gap-4"
-                        >
-                            <p className="text-gray-600 text-lg">{card.text}</p>
-                            <div className="text-black group-hover:text-white group-hover:bg-[#4b176b] transition-all absolute bottom-3 right-3 bg-white rounded-full p-2">
-                                {React.createElement(card.icon, { size: 27 })}
+        <div className="flex flex-col max-h-screen mb-4  2xl:mt-14 relative w-full">
+            {(loading || allMessage) ? (
+                <AiPreview chat={chat} allMessage={allMessage} loading={loading} />
+            ) : (
+                <div className='pl-10 2xl:pl-32'>
+                    <div className="mt-8 2xl:mt-12 mb-5 2xl:mb-8 font-medium text-gray-400 px-3">
+                        <img
+                            className='h-auto w-16 2xl:w-20 pb-3 2xl:pb-5 mix-blend-multiply'
+                            src="/src/assets/icons/logo.png"
+                        />
+                        <p className="bg-clip-text font-bold text-4xl lg:text-5xl 2xl:text-6xl text-transparent bg-gradient-to-r from-[#5f4681] via-[#ff69b4] to-[#ff5546]">
+                            {data.header.title}
+                        </p>
+                        <p className="text-3xl 2xl:text-5xl text-[#c4c7c5] mt-2">{data.header.subtitle}</p>
+                    </div>
+                    <div className="flex gap-4 p-3 mt-2 2xl:mt-10">
+                        {randomCards.map((card, index) => (
+                            <div
+                                onClick={() => setCurrentCard(card.text)}
+                                key={index}
+                                className="min-h-[150px] w-[220px] 2xl:w-[300px] group p-4 bg-slate-100 rounded-lg relative cursor-pointer hover:bg-slate-200 flex flex-col gap-4"
+                            >
+                                <p className="text-gray-600 text-base 2xl:text-lg">{card.text}</p>
+                                <div className="text-gray-500 group-hover:text-white text-sm 2xl:text-base group-hover:bg-[#4b176b] transition-all absolute bottom-3 right-3 bg-slate-200 rounded-full p-2">
+                                    {React.createElement(card.icon, { size: 25 })}
+                                </div>
                             </div>
-                        </div>
-                    ))}
-
+                        ))}
+                    </div>
                 </div>
-            </div>
-
-            <div className="absolute bottom-0 w-full  px-5 mx-auto">
-                <ChatInput />
+            )}
+            <div className="absolute bottom-0 w-full px-5 mx-auto">
+                <ChatInput setChat={setChat} />
                 <p className="mt-3 text-center text-sm font-light text-gray-600">
                     Ping me may display inaccurate info, including about people, so double-check its responses.
                 </p>
