@@ -1,5 +1,4 @@
 import { CalendarDays } from 'lucide-react'
-import React from 'react'
 import { useSelector } from 'react-redux'
 import { formatDistanceToNow } from 'date-fns';
 

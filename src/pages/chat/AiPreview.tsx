@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import AiImage from '../../assets/icons/logo.png';
 import ChatLoader from '../../components/ChatLoader';
