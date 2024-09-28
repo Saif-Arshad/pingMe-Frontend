@@ -2,7 +2,10 @@ import { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import AiImage from '../../assets/icons/logo.png';
 import ChatLoader from '../../components/ChatLoader';
-import useTypingEffect from '../../customHooks/useTypingEffect';
+import { Copy, Volume2 } from 'lucide-react';
+import toast from 'react-hot-toast';
+// import useTypingEffect from '../../customHooks/useTypingEffect';
+
 // Function to format response with custom HTML
 const formatResponse = (response: string): string => {
     const formattedResponse = response
@@ -16,20 +19,17 @@ const formatResponse = (response: string): string => {
 
 function AiPreview({ allMessage, chat }: any) {
     const [chatData, setChatData] = useState<any[]>([]);
+    console.log("🚀 ~ AiPreview ~ chatData:", chatData)
     const users = useSelector((state: any) => state.user);
     const bottomRef = useRef<null | HTMLDivElement>(null);
-    // const [showCursor, setShowCursor] = useState(true);
-    // Use the typing effect hook
-    const textToShow = useTypingEffect(allMessage?.response || "", 35, true);
 
     useEffect(() => {
         if (allMessage) {
             setChatData((prev) => {
-                const index = prev.findIndex(
-                    (item: any) =>
-                        item.prompt === allMessage.prompt &&
-                        item.response === "" &&
-                        item.isLoading === true
+                const index = prev.findIndex((item: any) =>
+                    item.prompt === allMessage.prompt &&
+                    item.response === "" &&
+                    item.isLoading === true
                 );
 
                 if (index !== -1) {
@@ -40,13 +40,35 @@ function AiPreview({ allMessage, chat }: any) {
 
                 return [...prev, allMessage];
             });
+
+            // If response exists, start the animation
+            if (allMessage.response) {
+                let index = 0;
+                let animatedResponse = "";
+                const intervalId = setInterval(() => {
+                    if (index < allMessage.response.length) {
+                        animatedResponse += allMessage.response[index];
+                        setChatData((prev) => {
+                            const updatedChatData = [...prev];
+                            const messageIndex = updatedChatData.findIndex((item: any) => item.prompt === allMessage.prompt);
+                            if (messageIndex !== -1) {
+                                updatedChatData[messageIndex] = {
+                                    ...updatedChatData[messageIndex],
+                                    response: animatedResponse,
+                                    isLoading: false // set isLoading to false to stop loader once animation starts
+                                };
+                            }
+                            return updatedChatData;
+                        });
+                        index++;
+                    } else {
+                        clearInterval(intervalId);
+                    }
+                }, 25);
+
+                return () => clearInterval(intervalId);
+            }
         }
-        // const cursorInterval = setInterval(() => {
-        //     setShowCursor((prev) => !prev);
-        // }, 500);
-
-        // return () => clearInterval(cursorInterval);
-
     }, [allMessage]);
 
     useEffect(() => {
@@ -54,6 +76,22 @@ function AiPreview({ allMessage, chat }: any) {
             bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
         }
     }, [chat, chatData]);
+
+    // Copy text to clipboard
+    const handleCopy = (text: string) => {
+        navigator.clipboard.writeText(text).then(() => {
+            toast.success('Copied to clipboard!');
+
+        }).catch(err => {
+            console.error('Failed to copy text: ', err);
+        });
+    };
+
+    // Read text aloud
+    const handleVoice = (text: string) => {
+        const utterance = new SpeechSynthesisUtterance(text);
+        speechSynthesis.speak(utterance);
+    };
 
     return (
         <div
@@ -84,15 +122,24 @@ function AiPreview({ allMessage, chat }: any) {
                             {item.isLoading ? (
                                 <ChatLoader />
                             ) : (
-                                <div className="prose prose-blue max-w-none">
-                                    {/* Display animated response text */}
-                                    <p dangerouslySetInnerHTML={{ __html: formatResponse(textToShow) }}></p>
+                                <div className='max-w-none'>
 
-                                    {/* {showCursor && (
-                                            <div className="flex justify-start">
-                                                <span className="mt-1 inline-block h-3 w-3 rounded-full bg-black dark:bg-white animate-blink"></span>
-                                            </div>
-                                        )} */}
+                                    <div className="prose prose-blue">
+                                        {/* Display animated response text */}
+                                        <p dangerouslySetInnerHTML={{ __html: formatResponse(item.response) }}></p>
+                                    </div>
+                                    <div className='text-sm flex items-center mt-4 text-gray-400 gap-2'>
+                                        <Volume2
+                                            size={20}
+                                            className="cursor-pointer hover:text-blue-500"
+                                            onClick={() => handleVoice(item.response)}
+                                        />
+                                        <Copy
+                                            size={20}
+                                            className="cursor-pointer hover:text-blue-500"
+                                            onClick={() => handleCopy(item.response)}
+                                        />
+                                    </div>
                                 </div>
                             )}
                         </div>

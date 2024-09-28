@@ -31,25 +31,26 @@ function ChatSideBar() {
                     </div>
                 </div>
                 <div className='message no-scrollbar overflow-y-auto h-[50vh] mt-4'>
+                    <Link to={'/chat'}>
+                        <div className={`flex gap-x-1 cursor-pointer p-2 rounded-xl mb-2 relative ${isChatRoute ? 'bg-purple-100' : "hover:bg-purple-50 "}`}>
+                            <div className='relative'>
 
-                    <div className={`flex gap-x-1 cursor-pointer p-2 rounded-xl mb-2 relative ${isChatRoute ? 'bg-purple-200' : "hover:bg-purple-100 "}`}>
-                        <div className='relative'>
+                                <img
+                                    className=' h-12 w-auto mix-blend-multiply'
+                                    src={aiImage}
+                                />
+                                {/* <div className="absolute inset-0 w-full h-full border-2 border-transparent rounded-full animate-blink"></div> */}
+                                <div className="w-3 h-3  rounded-full bg-green-500 absolute right-1 top-0">
+                                </div>
 
-                            <img
-                                className=' h-12 w-auto mix-blend-multiply'
-                                src={aiImage}
-                            />
-                            {/* <div className="absolute inset-0 w-full h-full border-2 border-transparent rounded-full animate-blink"></div> */}
-                            <div className="w-3 h-3  rounded-full bg-green-500 absolute right-1 top-0">
+                            </div>
+                            <div className='flex flex-col gap-0'>
+                                <p className='text-black font-semibold text-lg'>Ping Us</p>
+                                <p className='text-xs text-[#4F5665]'>Your Smart Chat Companion!</p>
                             </div>
 
                         </div>
-                        <div className='flex flex-col gap-0'>
-                            <p className='text-black font-semibold text-lg'>Ping Us</p>
-                            <p className='text-xs text-[#4F5665]'>Your Smart Chat Companion!</p>
-                        </div>
-
-                    </div>
+                    </Link>
 
                 </div>
             </div>
