@@ -10,7 +10,9 @@ createRoot(document.getElementById('root')!).render(
       position="bottom-right"
     />
     <Providers>
-      <App />
+      <div className='max-w-[100vw] overflow-x-hidden'>
+        <App />
+      </div>
     </Providers>
   </StrictMode>,
 )

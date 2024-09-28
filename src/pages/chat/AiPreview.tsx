@@ -96,11 +96,12 @@ function AiPreview({ allMessage, chat }: any) {
     return (
         <div
             style={{
-                maxHeight: 'calc(100vh - 60px)',
-                minHeight: 'calc(100vh - 60px)',
+                maxHeight: 'calc(100vh - 120px)',
+                minHeight: 'calc(100vh - 120px)',
             }}
-            className="overflow-y-auto p-3 pl-32 pt-20 pb-20"
+            className="overflow-y-auto p-3 pl-32 pt-10 pb-20 no-scrollbar"
         >
+
             {chatData.length > 0 &&
                 chatData.map((item, index) => (
                     <div key={index} className="max-w-[90%] flex flex-col gap-6">
@@ -135,7 +136,7 @@ function AiPreview({ allMessage, chat }: any) {
                                             onClick={() => handleVoice(item.response)}
                                         />
                                         <Copy
-                                            size={20}
+                                            size={16}
                                             className="cursor-pointer hover:text-blue-500"
                                             onClick={() => handleCopy(item.response)}
                                         />

@@ -129,14 +129,32 @@ const Main = ({ socket }: any) => {
     return (
         <div className="flex flex-col max-h-screen mb-4  2xl:mt-14 relative w-full">
             {(loading || allMessage) ? (
-                <AiPreview chat={chat} allMessage={allMessage} loading={loading} />
+                <div className='flex flex-col'>
+
+                    <div className='w-full px-5 flex items-center max-h-[60px] min-h-[60px] bg-[#f5f5f5] rounded-lg '>
+                        <div className='flex items-center'>
+
+                            <img
+                                className="h-10 w-10 rounded-full object-contain"
+                                src={aiImage}
+                                alt="AI"
+                            />
+                            <div className='flex flex-col'>
+                                <h3 className='font-medium text-gray-600 ml-3'>Ping Me</h3>
+                                <span className='text-green-700 text-xs ml-3'>Online</span>
+                            </div>
+
+                        </div>
+                    </div>
+                    <AiPreview chat={chat} allMessage={allMessage} loading={loading} />
+                </div>
             ) : (
-                <div className='pl-10 2xl:pl-32'>
-                    <div className="mt-8 2xl:mt-12 mb-5 2xl:mb-8 font-medium text-gray-400 px-3">
-                        <img
+                <div className='pl-4 xl:pl-6 2xl:pl-32'>
+                    <div className="mt-12 2xl:mt-20 mb-5 2xl:mb-8 font-medium text-gray-400 px-3">
+                        {/* <img
                             className='h-auto w-16 2xl:w-20 pb-3 2xl:pb-5 mix-blend-multiply'
                             src={aiImage}
-                        />
+                        /> */}
                         <p className="bg-clip-text font-bold text-4xl lg:text-5xl 2xl:text-6xl text-transparent bg-gradient-to-r from-[#5f4681] via-[#ff69b4] to-[#ff5546]">
                             {data.header.title}
                         </p>
@@ -147,7 +165,7 @@ const Main = ({ socket }: any) => {
                             <div
                                 onClick={() => setCurrentCard(card.text)}
                                 key={index}
-                                className="min-h-[150px] w-[220px] 2xl:w-[300px] group p-4 bg-slate-100 rounded-lg relative cursor-pointer hover:bg-slate-200 flex flex-col gap-4"
+                                className="min-h-[150px] w-[200px] xl:w-[210px] 2xl:w-[300px] group p-4 bg-slate-100 rounded-lg relative cursor-pointer hover:bg-slate-200 flex flex-col gap-4"
                             >
                                 <p className="text-gray-600 text-base 2xl:text-lg">{card.text}</p>
                                 <div className="text-gray-500 group-hover:text-white text-sm 2xl:text-base group-hover:bg-[#4b176b] transition-all absolute bottom-3 right-3 bg-slate-200 rounded-full p-2">
