@@ -47,7 +47,7 @@ function ChatInput({ setChat }: any) {
                         className="w-6 cursor-pointer text-gray-500" />
                     <Mic className="w-6 cursor-pointer text-gray-500" />
                     <button
-                        className='mr-3 bg-[#4b176b] hover:scale-105 transition-all rounded-full p-3 hover:bg-[#5c2d9c'
+                        className='mr-3 bg-[#21978B] hover:scale-105 transition-all rounded-full p-3 hover:bg-[#5c2d9c'
                     >
                         <Rocket className="w-5 cursor-pointer text-white" />
                     </button>

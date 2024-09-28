@@ -1,8 +1,9 @@
-import { Archive, FileLock2, MessageCircle, PlusCircle, Search, Star } from 'lucide-react'
+import { Archive, FileLock2, MessageCircle, Search, Star } from 'lucide-react'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import aiImage from '../assets/icons/logo.png'
 import { useLocation } from 'react-router-dom'
+import AIModel from './AIModel'
 function ChatSideBar({ active }: any) {
     console.log("🚀 ~ ChatSideBar ~ active:", active)
     const users = useSelector((state: any) => state.user)
@@ -26,45 +27,41 @@ function ChatSideBar({ active }: any) {
                         {
                             active.chat == true ?
                                 <>
-                                    <MessageCircle className='text-[#4b176b] mr-1 h-5 w-5' />
+                                    <MessageCircle className='text-[#21978B] mr-1 h-5 w-5' />
                                     Message
                                 </>
                                 : active.archive == true ?
                                     <>
-                                        <Archive className='text-[#4b176b] mr-1 h-5 w-5' />
+                                        <Archive className='text-[#21978B] mr-1 h-5 w-5' />
                                         Archive
                                     </>
                                     : active.block == true ?
                                         <>
-                                            <FileLock2 className='text-[#4b176b] mr-1 h-5 w-5' />
+                                            <FileLock2 className='text-[#21978B] mr-1 h-5 w-5' />
                                             Block Users
                                         </>
                                         :
                                         <>
-                                            <Star className='text-[#4b176b] mr-1 h-5 w-5' />
+                                            <Star className='text-[#21978B] mr-1 h-5 w-5' />
                                             Favorite
                                         </>
 
                         }
                         {/* Archieved */}
                     </h2>
-                    <div className='bg-[#4b176b] rounded-full p-1.5 text-white'>
+                    <AIModel />
 
-
-                        <PlusCircle className='h-5 w-5 cursor-pointer' />
-
-                    </div>
                 </div>
                 <div className='relative  mb-3 flex items-center'>
                     <input type="text"
-                        className='w-full p-2  pl-11 focus:outline-[#C7C3C3] text-black placeholder:text-[#C7C3C3] rounded-2xl border border-[#4b176b] bg-transparent'
+                        className='w-full p-2  pl-11 focus:outline-[#C7C3C3] text-black placeholder:text-[#C7C3C3] rounded-2xl border-2 border-[#c7c3c3]  bg-transparent'
                         name="" id="" placeholder='Search people or message' />
                     <Search className='absolute  text-[#C7C3C3] left-2' />
                 </div>
             </div>
             <div className='message no-scrollbar overflow-y-auto h-[50vh] mt-4'>
                 <Link to={'/chat'}>
-                    <div className={`flex gap-x-1 cursor-pointer p-2 rounded-xl mb-2 relative ${isChatRoute ? 'bg-purple-100' : "hover:bg-purple-50 "}`}>
+                    <div className={`flex gap-x-1 cursor-pointer p-2 rounded-xl mb-2 relative ${isChatRoute ? 'bg-slate-200' : "hover:bg-slate-100 "}`}>
                         <div className='relative'>
 
                             <img

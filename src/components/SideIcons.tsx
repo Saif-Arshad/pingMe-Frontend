@@ -46,22 +46,22 @@ function SideIcons() {
                     <div className='flex flex-col gap-3 items-center'>
                         <div
                             onClick={() => handleActive('chat')}
-                            className={`rounded-full p-2 ${active.chat ? 'bg-[#4b176b] text-white' : 'text-gray-600'} cursor-pointer`}>
+                            className={`rounded-full p-2 ${active.chat ? 'bg-[#21978B] text-white' : 'text-gray-600'} cursor-pointer`}>
                             <MessageCircle className={`${active.chat ? 'h-5 w-5' : 'h-6 w-6'}`} />
                         </div>
                         <div
                             onClick={() => handleActive('archive')}
-                            className={`rounded-full p-2 ${active.archive ? 'bg-[#4b176b] text-white' : 'text-gray-600'} cursor-pointer`}>
+                            className={`rounded-full p-2 ${active.archive ? 'bg-[#21978B] text-white' : 'text-gray-600'} cursor-pointer`}>
                             <Archive className={`${active.archive ? 'h-5 w-5' : 'h-6 w-6'}`} />
                         </div>
                         <div
                             onClick={() => handleActive('block')}
-                            className={`rounded-full p-2 ${active.block ? 'bg-[#4b176b] text-white' : 'text-gray-600'} cursor-pointer`}>
+                            className={`rounded-full p-2 ${active.block ? 'bg-[#21978B] text-white' : 'text-gray-600'} cursor-pointer`}>
                             <FileLock2 className={`${active.block ? 'h-5 w-5' : 'h-6 w-6'}`} />
                         </div>
                         <div
                             onClick={() => handleActive('fav')}
-                            className={`rounded-full p-2 ${active.fav ? 'bg-[#4b176b] text-white' : 'text-gray-600'} cursor-pointer`}>
+                            className={`rounded-full p-2 ${active.fav ? 'bg-[#21978B] text-white' : 'text-gray-600'} cursor-pointer`}>
                             <Star className={`${active.fav ? 'h-5 w-5' : 'h-6 w-6'}`} />
                         </div>
                     </div>
@@ -70,7 +70,7 @@ function SideIcons() {
                 <button
                     onClick={logOutUser}
                     className="group flex items-center justify-start
-   w-10 h-10 bg-[#4b176b] rounded-full cursor-pointer
+   w-10 h-10 bg-[#21978B] rounded-full cursor-pointer
    1">
                     <div className="flex items-center justify-center w-full
 transition-all duration-300 group-hover:justify-start

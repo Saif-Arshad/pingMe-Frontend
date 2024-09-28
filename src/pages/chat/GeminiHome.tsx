@@ -155,10 +155,15 @@ const Main = ({ socket }: any) => {
                             className='h-auto w-16 2xl:w-20 pb-3 2xl:pb-5 mix-blend-multiply'
                             src={aiImage}
                         /> */}
-                        <p className="bg-clip-text font-bold text-4xl lg:text-5xl 2xl:text-6xl text-transparent bg-gradient-to-r from-[#5f4681] via-[#ff69b4] to-[#ff5546]">
+                        <p
+                            className="bg-clip-text font-bold text-4xl lg:text-5xl 2xl:text-6xl text-transparent bg-gradient-to-r from-[#21978B] via-[#306d81] to-[#21978B]">
                             {data.header.title}
                         </p>
-                        <p className="text-3xl 2xl:text-5xl text-[#c4c7c5] mt-2">{data.header.subtitle}</p>
+                        <p
+                            style={{
+                                fontFamily: "italic_eiko"
+                            }}
+                            className="text-3xl 2xl:text-5xl text-[#c4c7c5] mt-2">{data.header.subtitle}</p>
                     </div>
                     <div className="flex gap-4 p-3 mt-2 2xl:mt-10">
                         {randomCards.map((card, index) => (
@@ -168,8 +173,8 @@ const Main = ({ socket }: any) => {
                                 className="min-h-[150px] w-[200px] xl:w-[210px] 2xl:w-[300px] group p-4 bg-slate-100 rounded-lg relative cursor-pointer hover:bg-slate-200 flex flex-col gap-4"
                             >
                                 <p className="text-gray-600 text-base 2xl:text-lg">{card.text}</p>
-                                <div className="text-gray-500 group-hover:text-white text-sm 2xl:text-base group-hover:bg-[#4b176b] transition-all absolute bottom-3 right-3 bg-slate-200 rounded-full p-2">
-                                    {React.createElement(card.icon, { size: 25 })}
+                                <div className="text-gray-500 group-hover:text-white text-sm 2xl:text-base group-hover:bg-[#21978B] transition-all absolute bottom-3 right-3 bg-slate-200 rounded-full p-2">
+                                    {React.createElement(card.icon, { size: 23 })}
                                 </div>
                             </div>
                         ))}
