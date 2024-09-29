@@ -1,25 +1,56 @@
 import { CalendarDays } from 'lucide-react'
 import { useSelector } from 'react-redux'
 import { formatDistanceToNow } from 'date-fns';
+import { useLocation } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 
 function UserHeader() {
-    const users = useSelector((state: any) => state.user)
-    const joinedDate = formatDistanceToNow(new Date(users && users.currentUser.createdAt), {
-        addSuffix: true,
-    });
+    const { currentUser } = useSelector((state: any) => state.user)
+    const { allUsers } = useSelector((state: any) => state.user)
+    const [userData, setUserData] = useState<any>()
+    console.log("🚀 ~ UserHeader ~ userData:", userData)
+    const [profile, setProfile] = useState<any>();
 
+    const joinedDate = userData?.createdAt
+        ? formatDistanceToNow(new Date(userData.createdAt), { addSuffix: true })
+        : null;
+    const location = useLocation();
+    const currentLocation = location.pathname;
+    console.log("🚀 ~ UserHeader ~ currentLocation:", currentLocation)
+    useEffect(() => {
+        if (currentLocation) {
+            const user = currentLocation.split('/');
+            console.log("🚀 ~ useEffect ~ user:", user)
+            setProfile(user[1])
+        }
+
+
+    }, [currentLocation])
+    useEffect(() => {
+        if (profile && currentUser && allUsers) {
+            if (profile == currentUser.username) {
+                setUserData(currentUser)
+            }
+            else {
+                const currentChatUser = allUsers.filter((item: any) => item.username === profile)
+                console.log("🚀 ~ useEffect ~ currentChatUser:", currentChatUser)
+                setUserData(currentChatUser[0])
+
+            }
+        }
+    }, [profile, allUsers, currentUser])
     return (
 
         <section className="relative pt-40 pb-24">
             <img src="https://pagedone.io/asset/uploads/1705473908.png" alt="cover-image" className="w-full absolute top-0 left-0 z-0 h-60 object-cover" />
             <div className="w-full max-w-7xl mx-auto px-6 md:px-8">
                 <div className="flex items-center justify-center sm:justify-start relative z-10 mb-5">
-                    <img src={users.currentUser.profileImage} alt={users.currentUser.username} className="border-4 h-52 rounded-full border-solid border-white object-cover" />
+                    <img src={userData && userData.profileImage} alt={userData && userData.username} className="border-4 h-52 rounded-full border-solid border-white object-cover" />
                 </div>
                 <div className="flex items-center justify-center flex-col sm:flex-row max-sm:gap-5 sm:justify-between mb-5">
                     <div className="block">
-                        <h3 className="font-manrope font-bold text-4xl text-gray-900  max-sm:text-center capitalize">{users.currentUser.username}</h3>
-                        <p className="font-normal text-sm leading-7 text-gray-500 mb-1 max-sm:text-center">@{users.currentUser.username}</p>
+                        <h3 className="font-manrope font-bold text-4xl text-gray-900  max-sm:text-center capitalize">{userData && userData.username}</h3>
+                        <p className="font-normal text-sm leading-7 text-gray-500 mb-1 max-sm:text-center">@{userData && userData.username}</p>
                         <p className="font-normal flex gap-x-2 items-center text-base leading-7 text-gray-500  max-sm:text-center">
                             <CalendarDays className='h-5 w-5' /> Joined {joinedDate}
                         </p>

@@ -1,15 +1,14 @@
 import { Archive, FileLock2, MessageCircle, Search, Star } from 'lucide-react'
-import { useSelector } from 'react-redux'
+// import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import aiImage from '../assets/icons/logo.png'
 import { useLocation } from 'react-router-dom'
 import AIModel from './AIModel'
 function ChatSideBar({ active }: any) {
-    console.log("🚀 ~ ChatSideBar ~ active:", active)
-    const users = useSelector((state: any) => state.user)
+    // const users = useSelector((state: any) => state.user)
     const location = useLocation()
     const isChatRoute = location.pathname === '/chat'
-    console.log("🚀 ~ ChatSideBar ~ users:", users)
+    // console.log("🚀 ~ ChatSideBar ~ users:", users)
     return (
         <div
             className='max-h-screen min-h-screen  bg-[#FAFAFA] w-64 p-3 py-7 pt-4 pb-5 flex flex-col'

@@ -19,7 +19,6 @@ const formatResponse = (response: string): string => {
 
 function AiPreview({ allMessage, chat }: any) {
     const [chatData, setChatData] = useState<any[]>([]);
-    console.log("🚀 ~ AiPreview ~ chatData:", chatData)
     const users = useSelector((state: any) => state.user);
     const bottomRef = useRef<null | HTMLDivElement>(null);
 

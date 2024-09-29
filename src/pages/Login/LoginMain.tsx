@@ -28,7 +28,6 @@ const SignInSignUp = () => {
         return userImages[randomIndex];
     }
     const randomImageLink = getRandomImage();
-    console.log("🚀 ~ SignInSignUp ~ randomImageLink:", randomImageLink)
     const loginValidationSchema = Yup.object({
         Credential: Yup.string()
             .required('Email or Username is required'),
@@ -112,7 +111,6 @@ const SignInSignUp = () => {
                     const res = await axiosInstance.post('/api/users/checkname', {
                         userName: debouncedQuery
                     });
-                    console.log("🚀 ~ useEffect ~ res:", res);
                     if (res) {
                         setUserNameAvalibility(res?.data.message);
                     }

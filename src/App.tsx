@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import socketIO from 'socket.io-client';
 // import LoginMain from './pages/Login/LoginMain';
 import SignInSignUp from './pages/Login/LoginMain';
-import { getCurrentUser } from './store/features/user.slice';
-import { useDispatch } from 'react-redux';
+import { getAllUsers, getCurrentUser } from './store/features/user.slice';
+import { useDispatch, useSelector } from 'react-redux';
 import { ThunkDispatch } from '@reduxjs/toolkit';
 import UserProfile from './pages/profile/UserProfile';
 import {
@@ -25,11 +25,16 @@ import MainChatDetail from './pages/chat-detail.tsx/main-chat-detail';
 function App() {
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
   const userToken = localStorage.getItem('pingMe_token');
+  const { currentUser } = useSelector((state: any) => state.user)
+
   useEffect(() => {
     if (userToken) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       dispatch(getCurrentUser(userToken))
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      dispatch(getAllUsers(userToken))
     }
   }, [dispatch, userToken]);
   // const [message, setMessage] = useState('');
@@ -46,11 +51,21 @@ function App() {
   // });
 
   useEffect(() => {
-    const newSocket = socketIO(`${import.meta.env.VITE_BACKEND_URL}`);
-    if (newSocket) {
+    if (currentUser?._id) {
+      const newSocket = socketIO(`${import.meta.env.VITE_BACKEND_URL}`, {
+        query: { userId: currentUser._id }, // Pass userId to the server
+      });
+
       setSocket(newSocket);
+
+      return () => {
+        if (newSocket) {
+          newSocket.disconnect();
+        }
+      };
     }
-  }, [])
+  }, [currentUser]);
+
   // const messageHandler = () => {
   //   if (!socket) return;
 
@@ -110,7 +125,7 @@ function App() {
           />
           <Route
             path="chat/:id"
-            element={!userToken ? <Navigate to="/account" replace /> : <MainChatDetail />}
+            element={!userToken ? <Navigate to="/account" replace /> : <MainChatDetail socket={socket} />}
           />
         </Routes>
       </Router>
