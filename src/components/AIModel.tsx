@@ -1,17 +1,31 @@
-import React from 'react'
 import {
     Drawer,
     DrawerBody,
-    DrawerFooter,
     DrawerHeader,
     DrawerOverlay,
     DrawerContent,
     DrawerCloseButton,
     useDisclosure,
-    Button,
-    Input,
 } from '@chakra-ui/react'
+import { useUser } from '../customHooks/useUser'
+import useDebounce from '../customHooks/useDebounce';
+import { useEffect, useState } from 'react';
+import { Search } from 'lucide-react';
+import { Link } from 'react-router-dom';
 function AIModel() {
+    const { getUsers, users: matchedUsers, message } = useUser()
+    console.log("🚀 ~ AIModel ~ matchedUsers:", matchedUsers)
+    const [inputValue, setInputValue] = useState("")
+    const debouncedQuery = useDebounce(inputValue, 400);
+
+    useEffect(() => {
+        console.log("🚀 ~ AIModel ~ debouncedQuery:", debouncedQuery)
+        if (debouncedQuery) {
+            getUsers(debouncedQuery)
+        } else {
+            getUsers("")
+        }
+    }, [debouncedQuery])
     const { isOpen, onOpen, onClose } = useDisclosure()
 
     return (
@@ -43,26 +57,96 @@ function AIModel() {
             </div>
             <Drawer
                 isOpen={isOpen}
-                placement='right'
+                placement='left'
                 onClose={onClose}
             >
                 <DrawerOverlay />
                 <DrawerContent>
                     <DrawerCloseButton />
-                    <DrawerHeader>Create your account</DrawerHeader>
+                    <DrawerHeader>
+                        <h3 className='flex font-medium text-lg'>
+                            Start New Chat
+                        </h3>
+                        <p className='text-sm text-gray-700 font-normal mt-3'>
+                            Never lose touch with your friends again. Search for them by username or email and easily start a conversation.
+                        </p>
 
-                    <DrawerBody>
-                        <Input placeholder='Type here...' />
+                        {/* <h3 className="flex items-center w-full mt-3">
+                            <span className="flex-grow bg-gray-200 rounded h-0.5"></span>
+                            {/* <span className="mx-3 text-lg font-medium text-[#9c9a9a]">or</span>
+                        <span className="flex-grow bg-gray-200 rounded h-0.5"></span>
+                    </h3> */}
+
+                        <div className='relative flex items-center mt-3'>
+                            <input type="text"
+                                value={inputValue}
+                                onChange={(e) => setInputValue(e.target.value)}
+                                className='w-full p-2  text-sm pl-11 focus:outline-[#C7C3C3] text-black placeholder:text-[#C7C3C3] rounded-2xl border-2 border-[#c7c3c3]  bg-transparent'
+                                name="" id="" placeholder='user name or Email' />
+                            <Search className='absolute  text-[#C7C3C3] left-2' />
+                        </div>
+                        {
+                            message &&
+                            <p className='mt-3 text-sm text-gray-500 font-normal capitalize'>
+                                {message}
+                            </p>
+                        }
+
+                    </DrawerHeader>
+
+
+                    <DrawerBody
+                        className="no-scrollbar"
+
+                    >
+                        {/* <input
+                            value={inputValue}
+                            onChange={(e) => setInputValue(e.target.value)}
+                            placeholder='UserName Or Email'
+                            className=' w-full p-2 rounded-xl border-2 border-gray-200 focus:ring-1 focus:ring-green-500 focus:border-green-500'
+                        /> */}
+                        {/* {
+                            (matchedUsers && matchedUsers.length > 0) &&
+                            <p className='mt-3 text-sm text-gray-500 font-normal'>
+                                Total {matchedUsers?.length} results Found
+                            </p>
+                        } */}
+
+                        <div>
+
+                            {
+                                matchedUsers &&
+
+                                <div className='overflow-y-auto'>
+                                    {
+                                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                                        // @ts-ignore
+                                        matchedUsers.map((user: any, index: number) => (
+                                            <Link to={`/chat/@${user?.username}`} key={index}>
+                                                <div className='flex items-center justify-between p-2 rounded-xl hover:bg-gray-100 cursor-pointer'>
+                                                    <div className='flex items-center'>
+                                                        <img src={user?.profileImage ?
+                                                            user?.profileImage :
+                                                            "https://res.cloudinary.com/di6r722sv/image/upload/v1727259169/7_nviboy.png"
+                                                        } alt="" className='w-10 h-10 rounded-full' />
+                                                        <div className='ml-3'>
+                                                            <p className='text-sm font-semibold capitalize'>{user?.profileName ? user?.profileName : user?.username}</p>
+                                                            <p className='text-xs text-gray-500'>{user?.email}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </Link>
+
+                                        ))
+                                    }
+                                </div>
+                            }
+
+
+                        </div>
                     </DrawerBody>
-
-                    <DrawerFooter>
-                        <Button variant='outline' mr={3} onClick={onClose}>
-                            Cancel
-                        </Button>
-                        <Button colorScheme='blue'>Save</Button>
-                    </DrawerFooter>
                 </DrawerContent>
-            </Drawer>
+            </Drawer >
         </>
     )
 }

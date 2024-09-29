@@ -14,6 +14,7 @@ import {
 } from "react-router-dom";
 import MainChat from './pages/chat/MainChat';
 import { ProtectedRoutes } from './utils/protectedRoutes';
+import MainChatDetail from './pages/chat-detail.tsx/main-chat-detail';
 // interface Message {
 //   text: string;
 //   id: string;
@@ -106,6 +107,10 @@ function App() {
           <Route
             path="/:id"
             element={!userToken ? <Navigate to="/account" replace /> : <UserProfile />}
+          />
+          <Route
+            path="chat/:id"
+            element={!userToken ? <Navigate to="/account" replace /> : <MainChatDetail />}
           />
         </Routes>
       </Router>
