@@ -8,7 +8,6 @@ function ChatInput({ setChat }: any) {
     const submitMessage = (e: any) => {
         e.preventDefault()
         if (!message) return
-        console.log(message)
         setChat(message)
         setMessage('')
     }

@@ -11,7 +11,7 @@ function ChatSideBar({ active }: any) {
     // console.log("🚀 ~ ChatSideBar ~ users:", users)
     return (
         <div
-            className='max-h-screen min-h-screen  bg-[#FAFAFA] w-64 p-3 py-7 pt-4 pb-5 flex flex-col'
+            className='max-h-screen min-h-screen  bg-[#f5f5f5] w-64 p-3 py-7 pt-4 pb-5 flex flex-col'
         >
 
             <div className='flex flex-col w-full '

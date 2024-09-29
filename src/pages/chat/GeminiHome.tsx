@@ -131,7 +131,7 @@ const Main = ({ socket }: any) => {
             {(loading || allMessage) ? (
                 <div className='flex flex-col'>
 
-                    <div className='w-full px-5 flex items-center max-h-[60px] min-h-[60px] bg-[#f5f5f5] rounded-lg '>
+                    <div className='w-full px-5 flex items-center max-h-[60px] min-h-[60px] bg-[#f5f5f5]  '>
                         <div className='flex items-center'>
 
                             <img

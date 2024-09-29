@@ -56,7 +56,11 @@ const SignInSignUp = () => {
         },
         validationSchema: loginValidationSchema,
         onSubmit: (values, action) => {
-            loginUser(values, action)
+            const payload = {
+                Credential: values.Credential.toLowerCase(),
+                password: values.password
+            }
+            loginUser(payload, action)
         },
     });
 
