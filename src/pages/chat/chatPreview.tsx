@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 
 
 function ChatPreview({ messages, chatUser }: any) {
+    console.log("🚀 ~ messages:", messages)
 
     const { currentUser } = useSelector((state: any) => state.user)
 
@@ -33,6 +34,9 @@ function ChatPreview({ messages, chatUser }: any) {
         } else {
             return "Just now"
         }
+    }
+    if (!currentUser) {
+        return <div className='flex justify-center items-center h-full'></div>
     }
     return (
         <div
@@ -69,10 +73,22 @@ function ChatPreview({ messages, chatUser }: any) {
                                         : "bg-slate-100 text-gray-800 rounded-tr-xl"
                                         }`}
                                 >
+
+                                    {/* <small className="message-time text-sm flex gap-2 font-semibold capitalize items-center mb-2"> */}
+
+                                    {/* {msg.sender === currentUser._id
+                                            ? "You"
+                                            : (chatUser?.profileName || chatUser?.username)
+                                        } */}
+                                    {/* </small> */}
                                     <p className="message-text break-words">{msg.message}</p>
-                                    <small className="message-time text-xs mt-1 block">
+                                    <span className='text-xs font-light'>
                                         {formatTimestamp(msg.timestamp)}
-                                    </small>
+                                    </span>
+                                    {/* <span className='text-xs font-semibold '>
+                                           Delivered
+                                        </span> */}
+
                                 </div>
 
                                 {msg.sender === currentUser._id && (

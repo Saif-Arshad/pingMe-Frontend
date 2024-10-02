@@ -1,220 +1,181 @@
-import { Archive, FileLock2, MessageCircle, Search, Star } from 'lucide-react'
-import { useDispatch, useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
-import aiImage from '../assets/icons/logo.png'
-import { useLocation } from 'react-router-dom'
-import AIModel from './AIModel'
-import { useEffect, useState } from 'react'
-import { joinRoom } from '../store/features/user.slice'
+import { Archive, FileLock2, MessageCircle, Search, Star, MoreVertical } from 'lucide-react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
+import aiImage from '../assets/icons/logo.png';
+import { useLocation } from 'react-router-dom';
+import AIModel from './AIModel';
+import { useEffect, useState } from 'react';
+import { joinRoom } from '../store/features/user.slice';
+import {
+    Menu,
+    MenuButton,
+    MenuList,
+    MenuItem,
+    IconButton,
+    Box,
+    Flex,
+} from '@chakra-ui/react';
+
 function ChatSideBar({ active, socket }: any) {
-    const { currentUser, allUsers } = useSelector((state: any) => state.user)
-    const location = useLocation()
-    const dispatch = useDispatch()
-    const [currentUserChat, setCurrentUserChat] = useState<any>()
+    const { currentUser, allUsers } = useSelector((state: any) => state.user);
+    const location = useLocation();
+    const dispatch = useDispatch();
+    const [currentUserChat, setCurrentUserChat] = useState<any>();
     const currentLocation = location.pathname;
-    const isChatRoute = location.pathname === '/chat'
+    const isChatRoute = location.pathname === '/chat';
     const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
-    const currentUserId = currentUser && currentUser._id
+
+    const currentUserId = currentUser && currentUser._id;
+
     useEffect(() => {
         if (currentLocation && currentLocation.includes('@')) {
             const user = currentLocation.split('@');
             setCurrentUserChat(user[1]);
         }
     }, [currentLocation]);
+
     useEffect(() => {
         if (socket) {
-            console.log("")
             const handleOnlineUsers = (onlineUserIds: any) => {
                 setOnlineUsers(onlineUserIds);
             };
+
             const handleRoomJoined = (data: any) => {
-                console.log("Room joined:", data);
+                dispatch(joinRoom(data));
+            };
 
-                dispatch(joinRoom(data))
-
-                // setMessages(data.messages);
-            }
-
-            // const handleNewMessage = (message: any) => {
-            //     console.log("Received message from server:", message);
-            //     setMessages((prev) => [...prev, message]);
-            // };
-            socket.on("room_joined", handleRoomJoined)
+            socket.on('room_joined', handleRoomJoined);
             socket.on('online_users', handleOnlineUsers);
-            // socket.on('newMessage', handleNewMessage);
 
             return () => {
                 socket.off('online_users', handleOnlineUsers);
-                socket.off("room_joined", handleRoomJoined)
-
-                // socket.off('newMessage', handleNewMessage);
+                socket.off('room_joined', handleRoomJoined);
             };
         }
     }, [socket]);
+
+    const sortedRooms = currentUser?.roomHistory?.slice().sort((a: any, b: any) => {
+        const lastMessageA = a.messages[a.messages.length - 1]?.timestamp || 0;
+        const lastMessageB = b.messages[b.messages.length - 1]?.timestamp || 0;
+        return new Date(lastMessageB).getTime() - new Date(lastMessageA).getTime();
+    });
+
     return (
-        <div
-            className='max-h-screen min-h-screen  bg-[#f5f5f5] w-64 p-3 py-7 pt-4 pb-5 flex flex-col'
-        >
-
-            <div className='flex flex-col w-full '
-            >
-                {/* <img
-                        className=' h-auto w-20  mix-blend-multiply'
-                        src="/src/assets/icons/logo.png"
-                    /> */}
-                <div className='flex mb-3 items-center justify-between '>
-
-                    <h2 className='font-medium text-gray-600 flex  items-center'>
-                        {
-                            active.chat == true ?
-                                <>
-                                    <MessageCircle className='text-[#21978B] mr-1 h-5 w-5' />
-                                    Message
-                                </>
-                                : active.archive == true ?
-                                    <>
-                                        <Archive className='text-[#21978B] mr-1 h-5 w-5' />
-                                        Archive
-                                    </>
-                                    : active.block == true ?
-                                        <>
-                                            <FileLock2 className='text-[#21978B] mr-1 h-5 w-5' />
-                                            Block Users
-                                        </>
-                                        :
-                                        <>
-                                            <Star className='text-[#21978B] mr-1 h-5 w-5' />
-                                            Favorite
-                                        </>
-
-                        }
-                        {/* Archieved */}
+        <Box maxH="100vh" minH="100vh" bg="#f5f5f5" w="64" p="3" py="7" pt="4" pb="5" flexDir="column">
+            <Flex flexDir="column" w="full">
+                <Flex mb="3" alignItems="center" justifyContent="space-between">
+                    <h2 className="font-medium text-gray-600 flex items-center">
+                        {active.chat ? (
+                            <>
+                                <MessageCircle className="text-[#21978B] mr-1 h-5 w-5" />
+                                Message
+                            </>
+                        ) : active.archive ? (
+                            <>
+                                <Archive className="text-[#21978B] mr-1 h-5 w-5" />
+                                Archive
+                            </>
+                        ) : active.block ? (
+                            <>
+                                <FileLock2 className="text-[#21978B] mr-1 h-5 w-5" />
+                                Block Users
+                            </>
+                        ) : (
+                            <>
+                                <Star className="text-[#21978B] mr-1 h-5 w-5" />
+                                Favorite
+                            </>
+                        )}
                     </h2>
                     <AIModel />
-
-                </div>
+                </Flex>
                 <div className='relative  mb-3 flex items-center'>
                     <input type="text"
-                        className='w-full p-2  pl-11 focus:outline-[#C7C3C3] text-black placeholder:text-[#C7C3C3] rounded-2xl border-2 border-[#c7c3c3]  bg-transparent'
+                        className='w-full p-2  pl-8 focus:outline-[#C7C3C3] text-black placeholder:text-[#C7C3C3] rounded-2xl border-2 border-[#c7c3c3]  bg-transparent'
                         name="" id="" placeholder='Search people or message' />
                     <Search className='absolute  text-[#C7C3C3] left-2' />
                 </div>
-            </div>
-            <div className='message no-scrollbar overflow-y-auto mt-4'>
-                <Link to={'/chat'}>
-                    <div className={`flex gap-x-1 cursor-pointer p-2 rounded-xl mb-2 relative ${isChatRoute ? 'bg-slate-200' : "hover:bg-slate-100 "}`}>
-                        <div className='relative'>
-
-                            <img
-                                className=' h-12 w-auto mix-blend-multiply'
-                                src={aiImage}
-                            />
-                            {/* <div className="absolute inset-0 w-full h-full border-2 border-transparent rounded-full animate-blink"></div> */}
-                            <div className="w-3 h-3  rounded-full bg-green-500 absolute right-1 top-0">
-                            </div>
-
-                        </div>
-                        <div className='flex flex-col gap-0'>
-                            <p className='text-black font-semibold text-lg'>Ping Me</p>
-                            <p className='text-xs text-[#4F5665]'>Your Smart Chat Companion!</p>
-                        </div>
-
-                    </div>
+            </Flex>
+            <Box overflowY="auto" mt="4" className="message no-scrollbar">
+                <Link to="/chat">
+                    <Flex
+                        gap="1"
+                        p="2"
+                        rounded="xl"
+                        mb="2"
+                        bg={isChatRoute ? 'slate-200' : 'hover:bg-slate-100'}
+                        cursor="pointer"
+                    >
+                        <Box position="relative">
+                            <img className="h-12 w-auto" src={aiImage} alt="Ping Me" />
+                            <Box
+                                className="absolute w-3 h-3 rounded-full bg-green-500"
+                                position="absolute"
+                                right="1"
+                                top="0"
+                            ></Box>
+                        </Box>
+                        <Flex flexDir="column">
+                            <p className="text-black font-semibold text-lg">Ping Me</p>
+                            <p className="text-xs text-[#4F5665]">Your Smart Chat Companion!</p>
+                        </Flex>
+                    </Flex>
                 </Link>
-                {
-                    currentUser && currentUser.roomHistory && currentUser.roomHistory.slice().reverse().map((room: any, index: number) => {
-                        const participants = room.participants.filter((user: any) => user !== currentUserId);
-                        console.log("🚀 ~ currentUser&&currentUser.roomHistory&&currentUser.roomHistory.slice ~ participants:", participants)
 
-                        if (!participants) return null;
+                {sortedRooms?.map((room: any, index: number) => {
+                    const participants = room.participants.filter((user: any) => user !== currentUserId);
+                    if (!participants.length) return null;
 
-                        console.log("🚀 ~ currentUser&&currentUser.roomHistory&&currentUser.roomHistory.slice ~ user:", participants)
-                        const userDetail = allUsers.filter((u: any) => u._id == participants[0])[0];
-                        console.log("🚀 ~ currentUser&&currentUser.roomHistory&&currentUser.roomHistory.slice ~ userDetail:", userDetail)
-                        const isUserOnline = onlineUsers.includes(participants[0]);
-                        return (
-                            <Link to={`/chat/@${userDetail.username}`} key={index}>
-                                <div className={`flex gap-x-3 cursor-pointer p-2 rounded-xl mb-2 relative ${currentUserChat == userDetail.username ? 'bg-slate-200' : "hover:bg-slate-100 "}`}>
-                                    <div className='relative'>
-                                        <img
-                                            src={userDetail?.profileImage || "https://res.cloudinary.com/di6r722sv/image/upload/v1727259169/7_nviboy.png"}
-                                            alt={userDetail?.username}
-                                            className="w-auto h-11 rounded-full"
-                                        />
+                    const userDetail = allUsers.find((u: any) => u._id === participants[0]);
+                    const isUserOnline = onlineUsers.includes(participants[0]);
 
-                                        <div className={`w-3 h-3 rounded-full absolute right-0 top-0 ${isUserOnline ? 'bg-green-500' : 'bg-gray-400'}`}></div>
+                    if (!userDetail) return null;
 
-                                    </div>
-                                    <div className='flex flex-col gap-0 mr-2'>
-                                        <p className='text-black font-semibold text-lg capitalize'>
-                                            {userDetail?.profileName || userDetail?.username}
-
-                                        </p>
-                                        <p className='text-xs text-[#4F5665]'>{userDetail?.email}</p>
-                                    </div>
-
-                                </div>
+                    return (
+                        <div key={index} className={`flex gap-x-3  cursor-pointer p-2 rounded-xl mb-2 relative ${currentUserChat === userDetail.username ? 'bg-slate-200' : "hover:bg-slate-100 "}`}>
+                            <Link to={`/chat/@${userDetail.username}`} key={index} className="flex gap-2">
+                                <Box position="relative">
+                                    <img
+                                        src={userDetail?.profileImage || 'https://res.cloudinary.com/di6r722sv/image/upload/v1727259169/7_nviboy.png'}
+                                        alt={userDetail?.username}
+                                        className="w-auto h-11 rounded-full"
+                                    />
+                                    <Box
+                                        className={`w-3 h-3 rounded-full absolute right-0 top-0 ${isUserOnline ? 'bg-green-500' : 'bg-gray-400'
+                                            }`}
+                                    ></Box>
+                                </Box>
+                                <Flex flexDir="column">
+                                    <p className="text-black font-semibold text-lg capitalize">
+                                        {userDetail?.profileName || userDetail?.username}
+                                    </p>
+                                    <p className="text-xs text-[#4F5665]">{userDetail?.email}</p>
+                                </Flex>
                             </Link>
-                        )
-                    })
-                }
 
-
-            </div>
-            {/* {
-                (users.isLoading) ?
-                    <>
-                        <div role="status" className="max-w-sm animate-pulse pl-3 flex items-center gap-2">
-                            <div className=" bg-gray-200 h-10 w-10 rounded-full dark:bg-gray-700 "></div>
-
-                            <div className='flex flex-col gap-0 w-20'>
-
-                                <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700  mb-2.5"></div>
-                                <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 "></div>
-                            </div>
-
-                            <span className="sr-only">Loading...</span>
+                            <Menu>
+                                <MenuButton
+                                    as={IconButton}
+                                    aria-label="Options"
+                                    icon={<MoreVertical />}
+                                    variant=""
+                                    position="absolute"
+                                    right="0"
+                                    top="3"
+                                />
+                                <MenuList>
+                                    <MenuItem onClick={() => console.log('Block User')}>Block User</MenuItem>
+                                    <MenuItem onClick={() => console.log('Delete Messages')}>Delete Messages</MenuItem>
+                                    <MenuItem onClick={() => console.log('Archive Messages')}>Archive Messages</MenuItem>
+                                    <MenuItem onClick={() => console.log('Add to Favorite')}>Add to Favorite</MenuItem>
+                                </MenuList>
+                            </Menu>
                         </div>
-                    </>
-                    :
-                    <div className='flex items-center justify-between'>
-                        <Link to={`/${users.currentUser && users.currentUser.username}`}>
-                            <div className='pl-3 flex items-center cursor-pointer gap-2'>
-
-                                <img
-                                    className='h-12 w-12 rounded-full object-contain'
-                                    src={users.currentUser && users.currentUser.profileImage} alt="" />
-                                <div className='flex flex-col gap-0'>
-                                    <>
-                                        <p className='text-black font-semibold'>{users.currentUser && users.currentUser.username}</p>
-                                        <p className='text-sm -mt-1 text-[#4F5665]'>@{users.currentUser && users.currentUser.username}</p>
-                                    </>
-                                </div>
-                            </div>
-
-                        </Link>
-                        <button
-                            onClick={logOutUser}
-                            className="group flex items-center justify-start
-   w-11 h-11 bg-[#4b176b] rounded-full cursor-pointer
-   1">
-                            <div className="flex items-center justify-center w-full
-transition-all duration-300 group-hover:justify-start
-group-hover:px-3">
-                                <svg className="w-4 h-4" viewBox="0 0 512 512" fill="white">
-                                    <path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z">
-                                    </path>
-                                </svg>
-                            </div>
-
-                        </button>
-                    </div>
-
-
-
-            } */}
-        </div >
-    )
+                    );
+                })}
+            </Box>
+        </Box>
+    );
 }
 
-export default ChatSideBar
+export default ChatSideBar;

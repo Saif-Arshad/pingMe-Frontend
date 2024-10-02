@@ -5,6 +5,7 @@ import axiosInstance from "../../utils/axios";
 interface InitialState {
     currentUser: any;
     allUsers: any;
+    AiChat: any;
     isLoading: boolean;
     currentUserId: any,
     isError: boolean;
@@ -20,6 +21,7 @@ const initialState: InitialState = {
     currentUser: null,
     allUsers: [],
     currentUserId: null,
+    AiChat: [],
     isLoading: true,
     isError: false,
     error: null,
@@ -72,6 +74,17 @@ const getUser = createSlice({
 
             console.log(state.currentUser);
         },
+        newMessage: (state: any, action: any) => {
+            console.log("🚀 ~ action:", action)
+
+            const currnetRoom = [action.payload.sender, action.payload.receiver].sort().join('-');
+            console.log("🚀 ~ currnetRoom:", currnetRoom)
+            const getRoomMessages = state.currentUser && state.currentUser.roomHistory.filter((item: any) => item.roomId === currnetRoom)[0];
+            console.log("🚀 ~ getRoomMessages:", getRoomMessages)
+            if (getRoomMessages) {
+                getRoomMessages.messages.push(action.payload);
+            }
+        }
     },
     extraReducers: (builder) => {
         builder.addCase(getCurrentUser.pending, (state) => {
@@ -83,6 +96,7 @@ const getUser = createSlice({
             state.isLoading = false;
             state.isError = false;
             state.currentUser = action.payload && action.payload.data.user;
+            console.log("🚀 ~ builder.addCase ~ currentUser:", state.currentUser)
             state.currentUserId = action.payload && action.payload.data.user._id;
         });
 
@@ -111,6 +125,6 @@ const getUser = createSlice({
     },
 });
 
-export const { joinRoom } = getUser.actions;
+export const { joinRoom, newMessage } = getUser.actions;
 
 export default getUser.reducer;

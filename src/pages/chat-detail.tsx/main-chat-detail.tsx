@@ -1,10 +1,10 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import SideIcons from "../../components/SideIcons";
 import ChatPreview from "../chat/chatPreview";
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import ChatInput from "../../components/ChatInput";
-
+import { newMessage } from "../../store/features/user.slice";
 interface MainChatDetailProps {
     socket: any;
 }
@@ -14,11 +14,13 @@ function MainChatDetail({ socket }: MainChatDetailProps) {
     const [userChat, setUserChat] = useState<string | null>(null);
     const [chatUser, setChatUser] = useState<any>(null);
     const [chat, setChat] = useState<string>('');
+    const dispatch = useDispatch();
     const [messages, setMessages] = useState<any[]>([]);
     const [isOnline, setIsOnline] = useState<boolean>(false);
     const location = useLocation();
     const currentLocation = location.pathname;
-
+    const currentUserMessages = currentUser?.roomHistory?.filter((item: any) => item.roomId === [chatUser?._id, currentUser._id].sort().join('-'))[0]?.messages || [];
+    console.log("🚀 ~ currentUserMessages:", currentUserMessages)
     // Extract chat username from the current location
     useEffect(() => {
         if (currentLocation && currentLocation.includes('@')) {
@@ -27,7 +29,20 @@ function MainChatDetail({ socket }: MainChatDetailProps) {
         }
     }, [currentLocation]);
 
-    // Listen for online users and new messages from the server
+
+    useEffect(() => {
+        if (currentUserMessages) {
+            setMessages(currentUserMessages)
+        }
+    }, [currentUserMessages])
+    // useEffect(() => {
+    //     if (currentUser && chatUser) {
+    //         const currnetRoom = [chatUser._id, currentUser._id].sort().join('-');
+    //         const getRoomMessages = currentUser && currentUser.roomHistory.filter((item: any) => item.roomId === currnetRoom)[0];
+    //         console.log("🚀 ~ useEffect ~ getRoomMessages:", getRoomMessages)
+    //         setMessages(getRoomMessages?.messages || []);
+    //     }
+    // }, [currentUser, chatUser])
     useEffect(() => {
         if (socket) {
             const handleOnlineUsers = (onlineUserIds: any) => {
@@ -36,7 +51,8 @@ function MainChatDetail({ socket }: MainChatDetailProps) {
 
             const handleNewMessage = (message: any) => {
                 console.log("Received message from server:", message);
-                setMessages((prev) => [...prev, message]);
+                dispatch(newMessage(message))
+                // setMessages((prev) => [...prev, message]);
             };
 
             socket.on('online_users', handleOnlineUsers);
@@ -48,7 +64,6 @@ function MainChatDetail({ socket }: MainChatDetailProps) {
             };
         }
     }, [socket, chatUser]);
-
     // Find the chat user based on the username
     useEffect(() => {
         if (userChat && allUsers) {
@@ -56,33 +71,27 @@ function MainChatDetail({ socket }: MainChatDetailProps) {
             console.log("🚀 ~ useEffect ~ currentChatUser:", currentChatUser)
             setChatUser(currentChatUser || null);
         }
-    }, [userChat, allUsers]);
+    }, [userChat, allUsers,]);
 
     useEffect(() => {
         if (currentUser && chatUser && socket) {
-            console.log("Working")
             const roomId = {
                 sender: currentUser._id,
                 receiver: chatUser._id,
             };
-            console.log("🚀 ~ useEffect ~ roomId:", roomId)
 
-            const roomIdChecking = [roomId.receiver, roomId.sender].sort().join('-');
-            console.log("🚀 ~ useEffect ~ roomIdChecking:", roomIdChecking)
-            console.log("🚀 ~ useEffect ~ roomIdChecking:", currentUser.roomHistory)
+            // const roomIdChecking = [roomId.receiver, roomId.sender].sort().join('-');
+            // if (Array.isArray(currentUser.roomHistory)) {
+            //     const roomExists = currentUser.roomHistory.filter(
+            //         (historyRoomId: any) => historyRoomId.roomId === roomIdChecking
+            //     );
+            //     console.log("🚀 ~ useEffect ~ roomExists:", roomExists)
 
-            if (Array.isArray(currentUser.roomHistory)) {
-                const roomExists = currentUser.roomHistory.filter(
-                    (historyRoomId: any) => historyRoomId.roomId === roomIdChecking
-                );
-                console.log("🚀 ~ useEffect ~ roomExists:", roomExists)
-
-                if (roomExists.length == 0) {
-                    socket.emit('joinRoom', roomId);
-                }
-            }
+            //     // if (roomExists.length == 0) {
+            socket.emit('joinRoom', roomId);
+            // }s
         }
-    }, [chatUser]);
+    }, [chatUser, currentUser]);
 
 
     // Handle message sending
@@ -113,7 +122,7 @@ function MainChatDetail({ socket }: MainChatDetailProps) {
                                     className="w-10 h-10 rounded-full"
                                 />
                                 <div className="flex flex-col">
-                                    <p className="font-medium text-gray-600 ml-3">
+                                    <p className="font-medium text-gray-600 capitalize ml-3">
                                         {chatUser?.profileName || chatUser?.username}
                                     </p>
                                     {isOnline ? (
