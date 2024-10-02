@@ -1,14 +1,56 @@
 import { Archive, FileLock2, MessageCircle, Search, Star } from 'lucide-react'
-// import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import aiImage from '../assets/icons/logo.png'
 import { useLocation } from 'react-router-dom'
 import AIModel from './AIModel'
-function ChatSideBar({ active }: any) {
-    // const users = useSelector((state: any) => state.user)
+import { useEffect, useState } from 'react'
+import { joinRoom } from '../store/features/user.slice'
+function ChatSideBar({ active, socket }: any) {
+    const { currentUser, allUsers } = useSelector((state: any) => state.user)
     const location = useLocation()
+    const dispatch = useDispatch()
+    const [currentUserChat, setCurrentUserChat] = useState<any>()
+    const currentLocation = location.pathname;
     const isChatRoute = location.pathname === '/chat'
-    // console.log("🚀 ~ ChatSideBar ~ users:", users)
+    const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
+    const currentUserId = currentUser && currentUser._id
+    useEffect(() => {
+        if (currentLocation && currentLocation.includes('@')) {
+            const user = currentLocation.split('@');
+            setCurrentUserChat(user[1]);
+        }
+    }, [currentLocation]);
+    useEffect(() => {
+        if (socket) {
+            console.log("")
+            const handleOnlineUsers = (onlineUserIds: any) => {
+                setOnlineUsers(onlineUserIds);
+            };
+            const handleRoomJoined = (data: any) => {
+                console.log("Room joined:", data);
+
+                dispatch(joinRoom(data))
+
+                // setMessages(data.messages);
+            }
+
+            // const handleNewMessage = (message: any) => {
+            //     console.log("Received message from server:", message);
+            //     setMessages((prev) => [...prev, message]);
+            // };
+            socket.on("room_joined", handleRoomJoined)
+            socket.on('online_users', handleOnlineUsers);
+            // socket.on('newMessage', handleNewMessage);
+
+            return () => {
+                socket.off('online_users', handleOnlineUsers);
+                socket.off("room_joined", handleRoomJoined)
+
+                // socket.off('newMessage', handleNewMessage);
+            };
+        }
+    }, [socket]);
     return (
         <div
             className='max-h-screen min-h-screen  bg-[#f5f5f5] w-64 p-3 py-7 pt-4 pb-5 flex flex-col'
@@ -58,7 +100,7 @@ function ChatSideBar({ active }: any) {
                     <Search className='absolute  text-[#C7C3C3] left-2' />
                 </div>
             </div>
-            <div className='message no-scrollbar overflow-y-auto h-[50vh] mt-4'>
+            <div className='message no-scrollbar overflow-y-auto mt-4'>
                 <Link to={'/chat'}>
                     <div className={`flex gap-x-1 cursor-pointer p-2 rounded-xl mb-2 relative ${isChatRoute ? 'bg-slate-200' : "hover:bg-slate-100 "}`}>
                         <div className='relative'>
@@ -79,6 +121,44 @@ function ChatSideBar({ active }: any) {
 
                     </div>
                 </Link>
+                {
+                    currentUser && currentUser.roomHistory && currentUser.roomHistory.slice().reverse().map((room: any, index: number) => {
+                        const participants = room.participants.filter((user: any) => user !== currentUserId);
+                        console.log("🚀 ~ currentUser&&currentUser.roomHistory&&currentUser.roomHistory.slice ~ participants:", participants)
+
+                        if (!participants) return null;
+
+                        console.log("🚀 ~ currentUser&&currentUser.roomHistory&&currentUser.roomHistory.slice ~ user:", participants)
+                        const userDetail = allUsers.filter((u: any) => u._id == participants[0])[0];
+                        console.log("🚀 ~ currentUser&&currentUser.roomHistory&&currentUser.roomHistory.slice ~ userDetail:", userDetail)
+                        const isUserOnline = onlineUsers.includes(participants[0]);
+                        return (
+                            <Link to={`/chat/@${userDetail.username}`} key={index}>
+                                <div className={`flex gap-x-3 cursor-pointer p-2 rounded-xl mb-2 relative ${currentUserChat == userDetail.username ? 'bg-slate-200' : "hover:bg-slate-100 "}`}>
+                                    <div className='relative'>
+                                        <img
+                                            src={userDetail?.profileImage || "https://res.cloudinary.com/di6r722sv/image/upload/v1727259169/7_nviboy.png"}
+                                            alt={userDetail?.username}
+                                            className="w-auto h-11 rounded-full"
+                                        />
+
+                                        <div className={`w-3 h-3 rounded-full absolute right-0 top-0 ${isUserOnline ? 'bg-green-500' : 'bg-gray-400'}`}></div>
+
+                                    </div>
+                                    <div className='flex flex-col gap-0 mr-2'>
+                                        <p className='text-black font-semibold text-lg capitalize'>
+                                            {userDetail?.profileName || userDetail?.username}
+
+                                        </p>
+                                        <p className='text-xs text-[#4F5665]'>{userDetail?.email}</p>
+                                    </div>
+
+                                </div>
+                            </Link>
+                        )
+                    })
+                }
+
 
             </div>
             {/* {

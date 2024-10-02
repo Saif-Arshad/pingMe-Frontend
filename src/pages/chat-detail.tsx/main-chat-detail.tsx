@@ -53,21 +53,37 @@ function MainChatDetail({ socket }: MainChatDetailProps) {
     useEffect(() => {
         if (userChat && allUsers) {
             const currentChatUser = allUsers.find((item: any) => item.username === userChat);
+            console.log("🚀 ~ useEffect ~ currentChatUser:", currentChatUser)
             setChatUser(currentChatUser || null);
         }
     }, [userChat, allUsers]);
 
-    // Join room with the chat user when both are available
     useEffect(() => {
         if (currentUser && chatUser && socket) {
+            console.log("Working")
             const roomId = {
                 sender: currentUser._id,
                 receiver: chatUser._id,
             };
+            console.log("🚀 ~ useEffect ~ roomId:", roomId)
 
-            socket.emit('joinRoom', roomId);
+            const roomIdChecking = [roomId.receiver, roomId.sender].sort().join('-');
+            console.log("🚀 ~ useEffect ~ roomIdChecking:", roomIdChecking)
+            console.log("🚀 ~ useEffect ~ roomIdChecking:", currentUser.roomHistory)
+
+            if (Array.isArray(currentUser.roomHistory)) {
+                const roomExists = currentUser.roomHistory.filter(
+                    (historyRoomId: any) => historyRoomId.roomId === roomIdChecking
+                );
+                console.log("🚀 ~ useEffect ~ roomExists:", roomExists)
+
+                if (roomExists.length == 0) {
+                    socket.emit('joinRoom', roomId);
+                }
+            }
         }
-    }, [currentUser, chatUser, socket]);
+    }, [chatUser]);
+
 
     // Handle message sending
     useEffect(() => {
@@ -85,8 +101,8 @@ function MainChatDetail({ socket }: MainChatDetailProps) {
 
     return (
         <div className="flex">
-            <SideIcons />
-            <div className="flex flex-col max-h-screen mb-4 2xl:mt-14 relative w-full bg-white">
+            <SideIcons socket={socket} />
+            <div className="flex flex-col max-h-screen mb-4 relative w-full bg-white">
                 <div className="flex flex-col">
                     <div className="w-full px-5 flex items-center max-h-[60px] min-h-[60px] bg-[#f5f5f5]">
                         <Link to={`/${chatUser && chatUser.username}`}>

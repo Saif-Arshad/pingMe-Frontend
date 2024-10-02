@@ -63,7 +63,7 @@ function AiPreview({ allMessage, chat }: any) {
                     } else {
                         clearInterval(intervalId);
                     }
-                }, 25);
+                }, 18);
 
                 return () => clearInterval(intervalId);
             }

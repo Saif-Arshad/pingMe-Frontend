@@ -15,7 +15,8 @@ import { useSelector } from 'react-redux';
 function AIModel() {
     const [inputValue, setInputValue] = useState("");
     const [matchedUsers, setMatchedUsers] = useState<any[]>([]);
-    const { allUsers } = useSelector((state: any) => state.user);
+    const { allUsers, currentUser } = useSelector((state: any) => state.user);
+    console.log("🚀 ~ AIModel ~ allUsers:", currentUser)
     const { isOpen, onOpen, onClose } = useDisclosure();
 
     useEffect(() => {

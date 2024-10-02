@@ -127,7 +127,7 @@ const Main = ({ socket }: any) => {
     }, [chat, socket]);
 
     return (
-        <div className="flex flex-col max-h-screen mb-4  2xl:mt-14 relative w-full bg-white">
+        <div className="flex flex-col max-h-screen mb-4 relative w-full bg-white">
             {(loading || allMessage) ? (
                 <div className='flex flex-col'>
 

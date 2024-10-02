@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import { useUser } from '../customHooks/useUser'
 import { Archive, FileLock2, MessageCircle, Star } from 'lucide-react'
 
-function SideIcons() {
+function SideIcons({ socket }:any) {
     const users = useSelector((state: any) => state.user)
     const { logOutUser } = useUser()
     const [active, setActive] = useState({
@@ -83,7 +83,7 @@ group-hover:px-3">
 
                 </button>
             </div >
-            <ChatSideBar active={active} />
+            <ChatSideBar active={active} socket={socket} />
         </div >
     )
 }

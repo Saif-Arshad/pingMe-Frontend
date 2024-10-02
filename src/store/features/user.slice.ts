@@ -1,15 +1,29 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axiosInstance from "../../utils/axios";
 
 
-const initialState = {
+interface InitialState {
+    currentUser: any;
+    allUsers: any;
+    isLoading: boolean;
+    currentUserId: any,
+    isError: boolean;
+    error: string | null;
+}
+interface JoinRoomPayload {
+    messages: any[];
+    participants: string[];
+    roomId: string;
+}
+
+const initialState: InitialState = {
     currentUser: null,
     allUsers: [],
+    currentUserId: null,
     isLoading: true,
     isError: false,
     error: null,
 };
-
 export const getCurrentUser = createAsyncThunk("gettigUser", async (token, { rejectWithValue }: any) => {
     try {
         const response = await axiosInstance.post(`/api/me`,
@@ -40,7 +54,24 @@ const getUser = createSlice({
     name: 'gettingCurrentUser',
     initialState,
     reducers: {
+        joinRoom: (state: any, action: PayloadAction<JoinRoomPayload>) => {
 
+            if (state.currentUser && state.currentUser.roomHistory) {
+                const payload = action.payload;
+                console.log("🚀 ~ payload:", payload)
+
+
+
+
+                const roomExists = state.currentUser.roomHistory.some((room: any) => room.roomId === payload.roomId);
+
+                if (!roomExists) {
+                    state.currentUser.roomHistory.push(payload);
+                }
+            }
+
+            console.log(state.currentUser);
+        },
     },
     extraReducers: (builder) => {
         builder.addCase(getCurrentUser.pending, (state) => {
@@ -52,6 +83,7 @@ const getUser = createSlice({
             state.isLoading = false;
             state.isError = false;
             state.currentUser = action.payload && action.payload.data.user;
+            state.currentUserId = action.payload && action.payload.data.user._id;
         });
 
         builder.addCase(getCurrentUser.rejected, (state, action: any) => {
@@ -78,5 +110,7 @@ const getUser = createSlice({
 
     },
 });
+
+export const { joinRoom } = getUser.actions;
 
 export default getUser.reducer;

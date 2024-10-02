@@ -25,7 +25,7 @@ import MainChatDetail from './pages/chat-detail.tsx/main-chat-detail';
 function App() {
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
   const userToken = localStorage.getItem('pingMe_token');
-  const { currentUser } = useSelector((state: any) => state.user)
+  const { currentUserId } = useSelector((state: any) => state.user)
 
   useEffect(() => {
     if (userToken) {
@@ -51,20 +51,24 @@ function App() {
   // });
 
   useEffect(() => {
-    if (currentUser?._id) {
-      const newSocket = socketIO(`${import.meta.env.VITE_BACKEND_URL}`, {
-        query: { userId: currentUser._id }, // Pass userId to the server
-      });
+    if (currentUserId) {
+      if (!socket) {
+        const newSocket = socketIO(`${import.meta.env.VITE_BACKEND_URL}`, {
+          query: { userId: currentUserId },
+        });
 
-      setSocket(newSocket);
+        setSocket(newSocket);
 
-      return () => {
-        if (newSocket) {
-          newSocket.disconnect();
-        }
-      };
+        return () => {
+          if (newSocket) {
+            newSocket.disconnect();
+          }
+        };
+      } else {
+        socket.io.opts.query = { userId: currentUserId };
+      }
     }
-  }, [currentUser]);
+  }, [currentUserId]); // Only re-run when currentUserId changes
 
   // const messageHandler = () => {
   //   if (!socket) return;
