@@ -71,7 +71,7 @@ function MainChatDetail({ socket }: MainChatDetailProps) {
             console.log("🚀 ~ useEffect ~ currentChatUser:", currentChatUser)
             setChatUser(currentChatUser || null);
         }
-    }, [userChat, allUsers,]);
+    }, [userChat, allUsers]);
 
     useEffect(() => {
         if (currentUser && chatUser && socket) {
@@ -91,7 +91,7 @@ function MainChatDetail({ socket }: MainChatDetailProps) {
             socket.emit('joinRoom', roomId);
             // }s
         }
-    }, [chatUser, currentUser]);
+    }, [chatUser]);
 
 
     // Handle message sending

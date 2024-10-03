@@ -5,7 +5,7 @@ import aiImage from '../assets/icons/logo.png';
 import { useLocation } from 'react-router-dom';
 import AIModel from './AIModel';
 import { useEffect, useState } from 'react';
-import { joinRoom } from '../store/features/user.slice';
+import { deleteRoom, joinRoom } from '../store/features/user.slice';
 import {
     Menu,
     MenuButton,
@@ -17,7 +17,7 @@ import {
 } from '@chakra-ui/react';
 
 function ChatSideBar({ active, socket }: any) {
-    const { currentUser, allUsers } = useSelector((state: any) => state.user);
+    const { currentUser, allUsers, currentUserId } = useSelector((state: any) => state.user);
     const location = useLocation();
     const dispatch = useDispatch();
     const [currentUserChat, setCurrentUserChat] = useState<any>();
@@ -25,7 +25,7 @@ function ChatSideBar({ active, socket }: any) {
     const isChatRoute = location.pathname === '/chat';
     const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
 
-    const currentUserId = currentUser && currentUser._id;
+
 
     useEffect(() => {
         if (currentLocation && currentLocation.includes('@')) {
@@ -59,7 +59,18 @@ function ChatSideBar({ active, socket }: any) {
         const lastMessageB = b.messages[b.messages.length - 1]?.timestamp || 0;
         return new Date(lastMessageB).getTime() - new Date(lastMessageA).getTime();
     });
+    const deleteMessages = (currentUserId: string, id: string) => {
+        console.log("🚀 ~ deleteMessages ~ currentUserId:", currentUserId)
+        console.log("🚀 ~ deleteMessages ~ id:", id)
+        const roomId = [currentUserId, id].sort().join('-');
+        const data = {
+            roomId,
+            currentUserId
+        }
+        socket.emit("delete-chat", data)
+        dispatch(deleteRoom({ roomId }))
 
+    }
     return (
         <Box maxH="100vh" minH="100vh" bg="#f5f5f5" w="64" p="3" py="7" pt="4" pb="5" flexDir="column">
             <Flex flexDir="column" w="full">
@@ -160,12 +171,12 @@ function ChatSideBar({ active, socket }: any) {
                                     icon={<MoreVertical />}
                                     variant=""
                                     position="absolute"
-                                    right="0"
+                                    right="-2"
                                     top="3"
                                 />
                                 <MenuList>
                                     <MenuItem onClick={() => console.log('Block User')}>Block User</MenuItem>
-                                    <MenuItem onClick={() => console.log('Delete Messages')}>Delete Messages</MenuItem>
+                                    <MenuItem onClick={() => deleteMessages(currentUserId, userDetail._id)}>Delete Messages</MenuItem>
                                     <MenuItem onClick={() => console.log('Archive Messages')}>Archive Messages</MenuItem>
                                     <MenuItem onClick={() => console.log('Add to Favorite')}>Add to Favorite</MenuItem>
                                 </MenuList>

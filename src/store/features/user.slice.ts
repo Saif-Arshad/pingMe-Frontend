@@ -75,15 +75,19 @@ const getUser = createSlice({
             console.log(state.currentUser);
         },
         newMessage: (state: any, action: any) => {
-            console.log("🚀 ~ action:", action)
 
             const currnetRoom = [action.payload.sender, action.payload.receiver].sort().join('-');
-            console.log("🚀 ~ currnetRoom:", currnetRoom)
             const getRoomMessages = state.currentUser && state.currentUser.roomHistory.filter((item: any) => item.roomId === currnetRoom)[0];
-            console.log("🚀 ~ getRoomMessages:", getRoomMessages)
             if (getRoomMessages) {
                 getRoomMessages.messages.push(action.payload);
             }
+        },
+        deleteRoom: (state: any, action: any) => {
+            console.log("🚀 ~ action:", action)
+            state.currentUser.roomHistory = state.currentUser.roomHistory.filter(
+                (item: any) => item.roomId !== action.payload.roomId
+            );
+
         }
     },
     extraReducers: (builder) => {
@@ -125,6 +129,6 @@ const getUser = createSlice({
     },
 });
 
-export const { joinRoom, newMessage } = getUser.actions;
+export const { joinRoom, newMessage, deleteRoom } = getUser.actions;
 
 export default getUser.reducer;
