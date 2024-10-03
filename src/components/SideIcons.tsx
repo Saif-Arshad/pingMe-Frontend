@@ -3,26 +3,27 @@ import ChatSideBar from './chatSideBar'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { useUser } from '../customHooks/useUser'
+import { Archive, FileLock2, MessageCircle, Star } from 'lucide-react'
 
 function SideIcons({ socket }: any) {
     const users = useSelector((state: any) => state.user)
     const { logOutUser } = useUser()
-    const [active] = useState({
+    const [active, setActive] = useState({
         chat: true,
         archive: false,
         block: false,
         fav: false
 
     })
-    // const handleActive = (icon: string) => {
-    //     setActive({
-    //         chat: false,
-    //         archive: false,
-    //         block: false,
-    //         fav: false,
-    //         [icon]: true,
-    //     });
-    // };
+    const handleActive = (icon: string) => {
+        setActive({
+            chat: false,
+            archive: false,
+            block: false,
+            fav: false,
+            [icon]: true,
+        });
+    };
 
     return (
         <div className='flex max-h-screen min-h-screen'>
@@ -42,7 +43,7 @@ function SideIcons({ socket }: any) {
 
                             </Link>
                     }
-                    {/* <div className='flex flex-col gap-3 items-center'>
+                    <div className='flex flex-col gap-3 items-center'>
                         <div
                             onClick={() => handleActive('chat')}
                             className={`rounded-full p-2 ${active.chat ? 'bg-[#21978B] text-white' : 'text-gray-600'} cursor-pointer`}>
@@ -63,7 +64,7 @@ function SideIcons({ socket }: any) {
                             className={`rounded-full p-2 ${active.fav ? 'bg-[#21978B] text-white' : 'text-gray-600'} cursor-pointer`}>
                             <Star className={`${active.fav ? 'h-5 w-5' : 'h-6 w-6'}`} />
                         </div>
-                    </div> */}
+                    </div>
 
                 </div>
                 <button

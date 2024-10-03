@@ -1,6 +1,6 @@
 import { Archive, FileLock2, MessageCircle, Search, Star, MoreVertical } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import aiImage from '../assets/icons/logo.png';
 import { useLocation } from 'react-router-dom';
 import AIModel from './AIModel';
@@ -24,8 +24,8 @@ function ChatSideBar({ active, socket }: any) {
     const currentLocation = location.pathname;
     const isChatRoute = location.pathname === '/chat';
     const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
-
-
+    const navigate = useNavigate();
+    const [searchQuery, setSearchQuery] = useState<string>(''); 
 
     useEffect(() => {
         if (currentLocation && currentLocation.includes('@')) {
@@ -68,12 +68,31 @@ function ChatSideBar({ active, socket }: any) {
             currentUserId
         }
         socket.emit("delete-chat", data)
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         dispatch(deleteRoom({ roomId }))
+        navigate("/chat")
 
     }
+    const filteredRooms = sortedRooms?.filter((room: any) => {
+        const participants = room.participants.filter((user: any) => user !== currentUserId);
+        if (!participants.length) return false;
+
+        const userDetail = allUsers.find((u: any) => u._id === participants[0]);
+        if (!userDetail) return false;
+
+        // Check if search query matches username, profileName, or email
+        const lowerCaseQuery = searchQuery.toLowerCase();
+        return (
+            userDetail.username.toLowerCase().includes(lowerCaseQuery) ||
+            (userDetail.profileName && userDetail.profileName.toLowerCase().includes(lowerCaseQuery)) ||
+            userDetail.email.toLowerCase().includes(lowerCaseQuery)
+        );
+    });
+
     return (
-        <Box maxH="100vh" minH="100vh" bg="#f5f5f5" w="64" p="3" py="7" pt="4" pb="5" flexDir="column">
-            <Flex flexDir="column" w="full">
+        <Box maxH="100vh" overflow={"hidden"} minH="100vh" bg="#f5f5f5" w="64" p="3" py="7" pt="4" pb="5" flexDir="column">
+            <Flex flexDir="column" w="full" h={"80px"}>
                 <Flex mb="3" alignItems="center" justifyContent="space-between">
                     <h2 className="font-medium text-gray-600 flex items-center">
                         {active.chat ? (
@@ -100,23 +119,21 @@ function ChatSideBar({ active, socket }: any) {
                     </h2>
                     <AIModel />
                 </Flex>
-                <div className='relative  mb-3 flex items-center'>
-                    <input type="text"
-                        className='w-full p-2  pl-8 focus:outline-[#C7C3C3] text-black placeholder:text-[#C7C3C3] rounded-2xl border-2 border-[#c7c3c3]  bg-transparent'
-                        name="" id="" placeholder='Search people or message' />
-                    <Search className='absolute  text-[#C7C3C3] left-2' />
+                <div className='relative mb-3 flex items-center'>
+                    <input
+                        type="text"
+                        value={searchQuery}  
+                        onChange={(e) => setSearchQuery(e.target.value)}  
+                        className='w-full p-2 pl-8 focus:outline-[#C7C3C3] text-black placeholder:text-[#C7C3C3] rounded-2xl border-2 border-[#c7c3c3] bg-transparent'
+                        placeholder='Search people or message'
+                    />
+                    <Search className='absolute text-[#C7C3C3] left-2' />
                 </div>
             </Flex>
-            <Box overflowY="auto" mt="4" className="message no-scrollbar">
+            <Box mt="4" className="message no-scrollbar sidebar-content ">
                 <Link to="/chat">
-                    <Flex
-                        gap="1"
-                        p="2"
-                        rounded="xl"
-                        mb="2"
-                        bg={isChatRoute ? 'slate-200' : 'hover:bg-slate-100'}
-                        cursor="pointer"
-                    >
+                    <div className={`flex gap-x-3 p-2 rounded-xl  mb-2 relative ${isChatRoute ? 'bg-slate-200' : "hover:bg-slate-100 "}`}>
+
                         <Box position="relative">
                             <img className="h-12 w-auto" src={aiImage} alt="Ping Me" />
                             <Box
@@ -130,10 +147,10 @@ function ChatSideBar({ active, socket }: any) {
                             <p className="text-black font-semibold text-lg">Ping Me</p>
                             <p className="text-xs text-[#4F5665]">Your Smart Chat Companion!</p>
                         </Flex>
-                    </Flex>
+                    </div>
                 </Link>
 
-                {sortedRooms?.map((room: any, index: number) => {
+                {filteredRooms?.map((room: any, index: number) => {
                     const participants = room.participants.filter((user: any) => user !== currentUserId);
                     if (!participants.length) return null;
 
@@ -143,8 +160,8 @@ function ChatSideBar({ active, socket }: any) {
                     if (!userDetail) return null;
 
                     return (
-                        <div key={index} className={`flex gap-x-3  cursor-pointer p-2 rounded-xl mb-2 relative ${currentUserChat === userDetail.username ? 'bg-slate-200' : "hover:bg-slate-100 "}`}>
-                            <Link to={`/chat/@${userDetail.username}`} key={index} className="flex gap-2">
+                        <div key={index} className={`flex gap-x-3 p-2 rounded-xl mb-2 relative ${currentUserChat === userDetail.username ? 'bg-slate-200' : "hover:bg-slate-100 "}`}>
+                            <Link to={`/chat/@${userDetail.username}`} key={index} className="flex gap-2  cursor-pointer ">
                                 <Box position="relative">
                                     <img
                                         src={userDetail?.profileImage || 'https://res.cloudinary.com/di6r722sv/image/upload/v1727259169/7_nviboy.png'}

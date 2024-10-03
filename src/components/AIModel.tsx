@@ -21,7 +21,7 @@ function AIModel() {
 
     useEffect(() => {
         if (inputValue.trim() === "") {
-            setMatchedUsers([]); // Empty array when input is empty
+            setMatchedUsers([]); 
         } else if (allUsers) {
             const filteredUsers = allUsers.filter((user: any) =>
                 user.username.toLowerCase().includes(inputValue.toLowerCase()) ||
