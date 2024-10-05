@@ -5,7 +5,7 @@ import aiImage from '../assets/icons/logo.png';
 import { useLocation } from 'react-router-dom';
 import AIModel from './AIModel';
 import { useEffect, useState } from 'react';
-import { archiveUsers, blockUsers, deleteRoom, joinRoom, unBlockUsers } from '../store/features/user.slice';
+import { archiveUsers, blockUsers, deleteRoom, joinRoom, unArchiveMessages, unBlockUsers } from '../store/features/user.slice';
 import {
     Menu,
     MenuButton,
@@ -82,19 +82,16 @@ function ChatSideBar({ active, socket }: any) {
         const userDetail = allUsers.find((u: any) => u._id === participants[0]);
         if (!userDetail) return false;
 
-        // Check the active state and filter accordingly
         if (active.block) {
-            // Show only blocked users
             return currentUser.blockList.includes(userDetail._id);
         } else if (active.archive) {
-            // Show only archived users
             return currentUser.archiveUser.includes(userDetail._id);
-        } else if (active.message) {
-            // Show only active chats (excluding block and archive)
+        } else {
+
+            // return currentUser.blockList.includes(userDetail._id);
             return !currentUser.blockList.includes(userDetail._id) && !currentUser.archiveUser.includes(userDetail._id);
         }
 
-        // If no specific active state is applied, return all rooms that match the search query
         const lowerCaseQuery = searchQuery.toLowerCase();
         return (
             userDetail.username.toLowerCase().includes(lowerCaseQuery) ||

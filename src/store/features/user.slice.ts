@@ -113,12 +113,22 @@ const getUser = createSlice({
         },
 
         archiveUsers: (state: any, action: any) => {
+            if (!state.currentUser.archiveUser) {
+                state.currentUser.archiveUser = [];
+            }
+
+            // Avoid adding duplicates
+            if (!state.currentUser.archiveUser.includes(action.payload)) {
+                state.currentUser.archiveUser.push(action.payload);
+            } else {
+                console.log("User is already in the archive.");
+            }
             console.log(action.payload)
-            state.currentUser = state.currentUser.archiveUsers.push(action.payload)
+            // state.currentUser = state.currentUser.archiveUsers.push(action.payload)
         },
         unArchiveMessages: (state: any, action: any) => {
-            state.currentUser.archiveUsers = state.currentUser.archiveUsers.filter((id: any) => id !== action.payload);
-
+            state.currentUser.archiveUser = state.currentUser.archiveUser.filter((id: any) => id !== action.payload);
+            console.log(state.currentUser)
         }
     },
     extraReducers: (builder) => {
