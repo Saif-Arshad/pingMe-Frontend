@@ -21,15 +21,21 @@ function AIModel() {
 
     useEffect(() => {
         if (inputValue.trim() === "") {
-            setMatchedUsers([]); 
-        } else if (allUsers) {
-            const filteredUsers = allUsers.filter((user: any) =>
-                user.username.toLowerCase().includes(inputValue.toLowerCase()) ||
-                user.email.toLowerCase().includes(inputValue.toLowerCase())
-            );
+            setMatchedUsers([]);
+        } else if (allUsers && currentUser && currentUser.blockList) {
+            const filteredUsers = allUsers.filter((user: any) => {
+                const isBlocked = currentUser.blockList?.includes(user._id) || user.blockList?.includes(currentUser._id);
+
+                return !isBlocked && (
+                    user.username.toLowerCase().includes(inputValue.toLowerCase()) ||
+                    user.email.toLowerCase().includes(inputValue.toLowerCase())
+                );
+            });
+
             setMatchedUsers(filteredUsers);
         }
-    }, [inputValue, allUsers]);
+    }, [inputValue, allUsers, currentUser]);
+
 
     return (
         <>

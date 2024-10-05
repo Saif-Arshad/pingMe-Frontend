@@ -23,10 +23,21 @@ const SignInSignUp = () => {
         "https://res.cloudinary.com/di6r722sv/image/upload/v1727259182/10_eskkp2.png"
 
     ]
+    const userBanners = [
+        "https://res.cloudinary.com/di6r722sv/image/upload/v1727940165/2_pb4vjr.jpg",
+        "https://res.cloudinary.com/di6r722sv/image/upload/v1727940166/pexels-philippedonn-1169754_vkpfdu.jpg",
+        "https://res.cloudinary.com/di6r722sv/image/upload/v1727940166/pexels-pixabay-531880_kgqqpx.jpg",
+        "https://res.cloudinary.com/di6r722sv/image/upload/v1727940168/1_buuomt.jpg"
+    ]
     function getRandomImage() {
         const randomIndex = Math.floor(Math.random() * userImages.length);
         return userImages[randomIndex];
     }
+    function getRandomBanner() {
+        const randomIndex = Math.floor(Math.random() * userBanners.length);
+        return userBanners[randomIndex];
+    }
+    const randomBannerLink = getRandomBanner()
     const randomImageLink = getRandomImage();
     const loginValidationSchema = Yup.object({
         Credential: Yup.string()
@@ -74,7 +85,7 @@ const SignInSignUp = () => {
         validationSchema: signupValidationSchema,
         onSubmit: (values, action) => {
 
-            registerUser(values, action, randomImageLink)
+            registerUser(values, action, randomImageLink, randomBannerLink)
         },
     });
     useEffect(() => {

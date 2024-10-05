@@ -65,21 +65,14 @@ function UserHeader() {
         // Add logic to save profile changes (e.g., dispatch an action to update the user profile in the backend)
         onClose();
     };
-    //             <div className='relative'>
-    //                 <img src="https://pagedone.io/asset/uploads/1705473908.png" alt="cover-image" className="w-full absolute top-0 left-0 z-0 h-[30vh] object-cover" />
-    //             </div>
-    //             <div className="w-full max-w-7xl mx-auto px-6  md:px-8">
-    //                 <div className="flex justify-start relative z-10 mb-5">
-    //                     <img src={userData?.profileImage} alt={userData?.username} className="border-4 h-32 sm:h-52 rounded-full border-solid border-white object-cover" />
-    //                 </div>
-    //                 <div className="flex sm:items-center sm:justify-center flex-col sm:flex-row max-sm:gap-5 justify-between mb-5">
+
 
     return (
         <section className="relativepb-4 max-h-screen">
             <div className='relative'>
-                <img src="https://pagedone.io/asset/uploads/1705473908.png" alt="cover-image" className="w-full absolute top-0 left-0 z-0 h-[30vh] object-cover" />
+                <img src={userData?.bannerImage} alt="cover-image" className="w-full absolute top-0 left-0 z-0 h-[40vh] object-cover" />
             </div>
-            <div className="w-full max-w-7xl mx-auto px-6 pt-[20vh] md:pt-[15vh] md:px-8">
+            <div className="w-full max-w-7xl mx-auto px-6 pt-[26vh] md:pt-[23vh] 2xl:pt-[27vh] md:px-8">
                 <div className="flex justify-start relative z-10 mb-5">
                     <img src={userData?.profileImage} alt={userData?.username} className="border-4 h-32 sm:h-52 rounded-full border-solid border-white object-cover" />
                 </div>

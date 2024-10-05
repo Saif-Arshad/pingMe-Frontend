@@ -17,6 +17,7 @@ function MainChatDetail({ socket }: MainChatDetailProps) {
     const dispatch = useDispatch();
     const [messages, setMessages] = useState<any[]>([]);
     const [isOnline, setIsOnline] = useState<boolean>(false);
+    const [isBlocked, setIsBlocked] = useState<boolean>(false);
     const location = useLocation();
     const currentLocation = location.pathname;
     const currentUserMessages = currentUser?.roomHistory?.filter((item: any) => item.roomId === [chatUser?._id, currentUser._id].sort().join('-'))[0]?.messages || [];
@@ -32,6 +33,7 @@ function MainChatDetail({ socket }: MainChatDetailProps) {
 
     useEffect(() => {
         if (currentUserMessages) {
+            console.log("🚀 ~ useEffect ~ currentUserMessages:", currentUserMessages)
             setMessages(currentUserMessages)
         }
     }, [currentUserMessages])
@@ -72,6 +74,21 @@ function MainChatDetail({ socket }: MainChatDetailProps) {
             setChatUser(currentChatUser || null);
         }
     }, [userChat, allUsers]);
+    useEffect(() => {
+        if (currentUser && chatUser) {
+            // Check if the chat user has blocked the current user or if the current user has blocked the chat user
+            const currentUserBlocked = currentUser.blockList.includes(chatUser._id);
+            const chatUserBlocked = chatUser.blockList.includes(currentUser._id);
+
+            // Set the isBlocked state accordingly
+            if (currentUserBlocked || chatUserBlocked) {
+                setIsBlocked(true);
+            } else {
+                setIsBlocked(false);
+            }
+        }
+    }, [currentUser, chatUser]);
+
 
     useEffect(() => {
         if (currentUser && chatUser && socket) {
@@ -140,7 +157,14 @@ function MainChatDetail({ socket }: MainChatDetailProps) {
                     />
                 </div>
                 <div className="absolute bottom-0 w-full px-5 mx-auto">
-                    <ChatInput setChat={setChat} />
+                    {
+                        !isBlocked ?
+                            <ChatInput setChat={setChat} />
+                            :
+                            <p className="mt-3 text-center text-sm font-light text-gray-600">
+                                Congratulations! You’ve unlocked the ‘Blocked’ achievement!
+                            </p>
+                    }
                 </div>
             </div>
         </div>

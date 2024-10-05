@@ -87,6 +87,37 @@ const getUser = createSlice({
             state.currentUser.roomHistory = state.currentUser.roomHistory.filter(
                 (item: any) => item.roomId !== action.payload.roomId
             );
+            state.currentUser.blockList = state.currentUser.blockList.filter((id: any) => id !== action.payload.id);
+
+
+        },
+        blockUsers: (state: any, action: any) => {
+
+            if (!state.currentUser.blockList) {
+                state.currentUser.blockList = [];
+            }
+
+            // Avoid adding duplicates
+            if (!state.currentUser.blockList.includes(action.payload)) {
+                state.currentUser.blockList.push(action.payload);
+            } else {
+                console.log("User is already in the blockList.");
+            }
+        },
+
+        unBlockUsers: (state: any, action: any) => {
+            console.log(action.payload);
+            console.log(action.payload);
+
+            state.currentUser.blockList = state.currentUser.blockList.filter((id: any) => id !== action.payload);
+        },
+
+        archiveUsers: (state: any, action: any) => {
+            console.log(action.payload)
+            state.currentUser = state.currentUser.archiveUsers.push(action.payload)
+        },
+        unArchiveMessages: (state: any, action: any) => {
+            state.currentUser.archiveUsers = state.currentUser.archiveUsers.filter((id: any) => id !== action.payload);
 
         }
     },
@@ -129,6 +160,6 @@ const getUser = createSlice({
     },
 });
 
-export const { joinRoom, newMessage, deleteRoom } = getUser.actions;
+export const { joinRoom, unBlockUsers, unArchiveMessages, newMessage, archiveUsers, deleteRoom, blockUsers } = getUser.actions;
 
 export default getUser.reducer;

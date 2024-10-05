@@ -11,10 +11,11 @@ export const useUser = () => {
     const [loading, SetLoading] = useState(false)
     const navigate = useNavigate()
 
-    const registerUser = async (data: registerProps, action: any, Image: string) => {
+    const registerUser = async (data: registerProps, action: any, Image: string,randomBannerLink:string) => {
         const payload = {
             ...data,
-            profileImage: Image
+            profileImage: Image,
+            bannerImage: randomBannerLink
         }
         try {
             SetLoading(true)

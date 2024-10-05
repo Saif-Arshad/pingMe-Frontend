@@ -1,11 +1,11 @@
-import { Archive, FileLock2, MessageCircle, Search, Star, MoreVertical } from 'lucide-react';
+import { Archive, FileLock2, MessageCircle, Search, MoreVertical } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import aiImage from '../assets/icons/logo.png';
 import { useLocation } from 'react-router-dom';
 import AIModel from './AIModel';
 import { useEffect, useState } from 'react';
-import { deleteRoom, joinRoom } from '../store/features/user.slice';
+import { archiveUsers, blockUsers, deleteRoom, joinRoom, unBlockUsers } from '../store/features/user.slice';
 import {
     Menu,
     MenuButton,
@@ -25,7 +25,7 @@ function ChatSideBar({ active, socket }: any) {
     const isChatRoute = location.pathname === '/chat';
     const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
     const navigate = useNavigate();
-    const [searchQuery, setSearchQuery] = useState<string>(''); 
+    const [searchQuery, setSearchQuery] = useState<string>('');
 
     useEffect(() => {
         if (currentLocation && currentLocation.includes('@')) {
@@ -70,10 +70,11 @@ function ChatSideBar({ active, socket }: any) {
         socket.emit("delete-chat", data)
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        dispatch(deleteRoom({ roomId }))
+        dispatch(deleteRoom({ roomId, id }))
         navigate("/chat")
 
     }
+    console.log(sortedRooms, "sorted")
     const filteredRooms = sortedRooms?.filter((room: any) => {
         const participants = room.participants.filter((user: any) => user !== currentUserId);
         if (!participants.length) return false;
@@ -81,7 +82,19 @@ function ChatSideBar({ active, socket }: any) {
         const userDetail = allUsers.find((u: any) => u._id === participants[0]);
         if (!userDetail) return false;
 
-        // Check if search query matches username, profileName, or email
+        // Check the active state and filter accordingly
+        if (active.block) {
+            // Show only blocked users
+            return currentUser.blockList.includes(userDetail._id);
+        } else if (active.archive) {
+            // Show only archived users
+            return currentUser.archiveUser.includes(userDetail._id);
+        } else if (active.message) {
+            // Show only active chats (excluding block and archive)
+            return !currentUser.blockList.includes(userDetail._id) && !currentUser.archiveUser.includes(userDetail._id);
+        }
+
+        // If no specific active state is applied, return all rooms that match the search query
         const lowerCaseQuery = searchQuery.toLowerCase();
         return (
             userDetail.username.toLowerCase().includes(lowerCaseQuery) ||
@@ -90,6 +103,58 @@ function ChatSideBar({ active, socket }: any) {
         );
     });
 
+
+    const blockUser = (currentUserId: string, userId: string) => {
+        const data = {
+            currentUserId,
+            userId
+        }
+        socket.emit("block-user", data)
+
+
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        dispatch(blockUsers(userId))
+        navigate("/chat")
+
+    }
+    const archiveMessages = (currentUserId: string, userId: string) => {
+        const data = {
+            currentUserId,
+            userId
+        }
+        socket.emit("archive-user", data)
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        dispatch(archiveUsers(userId))
+        navigate("/chat")
+
+    }
+    const unArchive = (currentUserId: string, userId: string) => {
+        const data = {
+            currentUserId,
+            userId
+        }
+        socket.emit("unArchive-user", data)
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        dispatch(unArchiveMessages(userId))
+        navigate("/chat")
+
+    }
+    const unBlockUser = (currentUserId: string, userId: string) => {
+        const data = {
+            currentUserId,
+            userId
+        }
+        socket.emit("unBlock-user", data)
+
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        dispatch(unBlockUsers(userId))
+        navigate("/chat")
+
+    }
     return (
         <Box maxH="100vh" overflow={"hidden"} minH="100vh" bg="#f5f5f5" w="64" p="3" py="7" pt="4" pb="5" flexDir="column">
             <Flex flexDir="column" w="full" h={"80px"}>
@@ -105,15 +170,10 @@ function ChatSideBar({ active, socket }: any) {
                                 <Archive className="text-[#21978B] mr-1 h-5 w-5" />
                                 Archive
                             </>
-                        ) : active.block ? (
+                        ) : (
                             <>
                                 <FileLock2 className="text-[#21978B] mr-1 h-5 w-5" />
                                 Block Users
-                            </>
-                        ) : (
-                            <>
-                                <Star className="text-[#21978B] mr-1 h-5 w-5" />
-                                Favorite
                             </>
                         )}
                     </h2>
@@ -122,10 +182,10 @@ function ChatSideBar({ active, socket }: any) {
                 <div className='relative mb-3 flex items-center'>
                     <input
                         type="text"
-                        value={searchQuery}  
-                        onChange={(e) => setSearchQuery(e.target.value)}  
-                        className='w-full p-2 pl-8 focus:outline-[#C7C3C3] text-black placeholder:text-[#C7C3C3] rounded-2xl border-2 border-[#c7c3c3] bg-transparent'
-                        placeholder='Search people or message'
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className='w-full p-2 pl-10 focus:outline-[#C7C3C3] text-black placeholder:text-[#C7C3C3] rounded-2xl border-2 border-[#c7c3c3] bg-transparent'
+                        placeholder='Search Chats'
                     />
                     <Search className='absolute text-[#C7C3C3] left-2' />
                 </div>
@@ -192,10 +252,20 @@ function ChatSideBar({ active, socket }: any) {
                                     top="3"
                                 />
                                 <MenuList>
-                                    <MenuItem onClick={() => console.log('Block User')}>Block User</MenuItem>
-                                    <MenuItem onClick={() => deleteMessages(currentUserId, userDetail._id)}>Delete Messages</MenuItem>
-                                    <MenuItem onClick={() => console.log('Archive Messages')}>Archive Messages</MenuItem>
-                                    <MenuItem onClick={() => console.log('Add to Favorite')}>Add to Favorite</MenuItem>
+                                    {
+                                        active.block ?
+                                            <MenuItem onClick={() => unBlockUser(currentUserId, userDetail._id)}>UnBlock User</MenuItem>
+                                            :
+                                            active.archive ?
+                                                <MenuItem onClick={() => unArchive(currentUserId, userDetail._id)}>UnArchive</MenuItem>
+                                                :
+                                                <>
+                                                    <MenuItem onClick={() => blockUser(currentUserId, userDetail._id)}>Block User</MenuItem>
+                                                    <MenuItem onClick={() => deleteMessages(currentUserId, userDetail._id)}>Delete Messages</MenuItem>
+                                                    <MenuItem onClick={() => archiveMessages(currentUserId, userDetail._id)}>Archive Messages</MenuItem>
+                                                </>
+                                    }
+                                    {/* <MenuItem onClick={() => console.log('Add to Favorite')}>Add to Favorite</MenuItem> */}
                                 </MenuList>
                             </Menu>
                         </div>
@@ -207,3 +277,5 @@ function ChatSideBar({ active, socket }: any) {
 }
 
 export default ChatSideBar;
+
+
