@@ -46,7 +46,9 @@ function ChatSideBar({ active, socket }: any) {
 
             socket.on('room_joined', handleRoomJoined);
             socket.on('online_users', handleOnlineUsers);
-
+            socket.on('roomInvite', ({ roomId }: any) => {
+                socket.emit('joinInvite', { roomId });
+            });
             return () => {
                 socket.off('online_users', handleOnlineUsers);
                 socket.off('room_joined', handleRoomJoined);
@@ -86,9 +88,7 @@ function ChatSideBar({ active, socket }: any) {
             return currentUser.blockList.includes(userDetail._id);
         } else if (active.archive) {
             return currentUser.archiveUser.includes(userDetail._id);
-        } else {
-
-            // return currentUser.blockList.includes(userDetail._id);
+        } else if (active.chat) {
             return !currentUser.blockList.includes(userDetail._id) && !currentUser.archiveUser.includes(userDetail._id);
         }
 
@@ -165,7 +165,7 @@ function ChatSideBar({ active, socket }: any) {
                         ) : active.archive ? (
                             <>
                                 <Archive className="text-[#21978B] mr-1 h-5 w-5" />
-                                Archive
+                                Archive Chats
                             </>
                         ) : (
                             <>
@@ -251,15 +251,15 @@ function ChatSideBar({ active, socket }: any) {
                                 <MenuList>
                                     {
                                         active.block ?
-                                            <MenuItem onClick={() => unBlockUser(currentUserId, userDetail._id)}>UnBlock User</MenuItem>
+                                            <MenuItem onClick={() => unBlockUser(currentUserId, userDetail._id)}>UnBlock</MenuItem>
                                             :
                                             active.archive ?
                                                 <MenuItem onClick={() => unArchive(currentUserId, userDetail._id)}>UnArchive</MenuItem>
                                                 :
                                                 <>
-                                                    <MenuItem onClick={() => blockUser(currentUserId, userDetail._id)}>Block User</MenuItem>
-                                                    <MenuItem onClick={() => deleteMessages(currentUserId, userDetail._id)}>Delete Messages</MenuItem>
-                                                    <MenuItem onClick={() => archiveMessages(currentUserId, userDetail._id)}>Archive Messages</MenuItem>
+                                                    <MenuItem onClick={() => blockUser(currentUserId, userDetail._id)}>Block</MenuItem>
+                                                    <MenuItem onClick={() => deleteMessages(currentUserId, userDetail._id)}>Delete</MenuItem>
+                                                    <MenuItem onClick={() => archiveMessages(currentUserId, userDetail._id)}>Archive</MenuItem>
                                                 </>
                                     }
                                     {/* <MenuItem onClick={() => console.log('Add to Favorite')}>Add to Favorite</MenuItem> */}

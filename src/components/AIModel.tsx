@@ -16,7 +16,7 @@ function AIModel() {
     const [inputValue, setInputValue] = useState("");
     const [matchedUsers, setMatchedUsers] = useState<any[]>([]);
     const { allUsers, currentUser } = useSelector((state: any) => state.user);
-    console.log("🚀 ~ AIModel ~ allUsers:", currentUser)
+    console.log("🚀 ~ AIModel ~ allUsers:", allUsers)
     const { isOpen, onOpen, onClose } = useDisclosure();
 
     useEffect(() => {

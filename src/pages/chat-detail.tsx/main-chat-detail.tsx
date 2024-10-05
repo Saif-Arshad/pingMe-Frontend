@@ -96,6 +96,7 @@ function MainChatDetail({ socket }: MainChatDetailProps) {
                 sender: currentUser._id,
                 receiver: chatUser._id,
             };
+            socket.emit('joinRoom', roomId);
 
             // const roomIdChecking = [roomId.receiver, roomId.sender].sort().join('-');
             // if (Array.isArray(currentUser.roomHistory)) {
@@ -105,7 +106,6 @@ function MainChatDetail({ socket }: MainChatDetailProps) {
             //     console.log("🚀 ~ useEffect ~ roomExists:", roomExists)
 
             //     // if (roomExists.length == 0) {
-            socket.emit('joinRoom', roomId);
             // }s
         }
     }, [chatUser]);
@@ -119,9 +119,10 @@ function MainChatDetail({ socket }: MainChatDetailProps) {
                 receiver: chatUser._id,
                 message: chat,
             };
+            console.log("🚀 ~ useEffect ~ messageData:", messageData)
 
-            socket.emit('private_message', messageData);  // Send the message
-            setChat('');  // Clear the input after sending
+            socket.emit('private_message', messageData); 
+            setChat(''); 
         }
     }, [chat, socket, currentUser, chatUser]);
 

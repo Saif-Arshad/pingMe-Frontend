@@ -15,17 +15,14 @@ import {
 import MainChat from './pages/chat/MainChat';
 import { ProtectedRoutes } from './utils/protectedRoutes';
 import MainChatDetail from './pages/chat-detail.tsx/main-chat-detail';
-// interface Message {
-//   text: string;
-//   id: string;
-//   time: string;
-//   socketID: string;
-// }
+import toast from 'react-hot-toast';
+
 
 function App() {
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
   const userToken = localStorage.getItem('pingMe_token');
-  const { currentUserId } = useSelector((state: any) => state.user)
+  const { currentUserId, currentUser } = useSelector((state: any) => state.user)
+  const [socket, setSocket] = useState<any>(null);
 
   useEffect(() => {
     if (userToken) {
@@ -37,18 +34,19 @@ function App() {
       dispatch(getAllUsers(userToken))
     }
   }, [dispatch, userToken]);
-  // const [message, setMessage] = useState('');
-  // const [allMessage, setAllMessage] = useState<Message[]>([]);
-  const [socket, setSocket] = useState<any>(null);
 
-  // return () => {
-  //   newSocket.off('message_receive');
-  //   newSocket.disconnect();
-  // };
-  // newSocket.on('message_receive', (data: Message) => {
-  //   console.log("Data From Backend:", data);
-  //   setAllMessage((prev) => [...prev, data]);
-  // });
+  useEffect(() => {
+    if (currentUser && socket) {
+      currentUser.roomHistory.forEach((room: any) => {
+        const roomId = {
+          sender: currentUser._id,
+          receiver: room.participants.find((p: any) => p !== currentUser._id),
+        };
+        socket.emit('joinRoom', roomId);
+      });
+    }
+  }, [currentUser, socket]);
+
 
   useEffect(() => {
     if (currentUserId) {
@@ -68,9 +66,13 @@ function App() {
         socket.io.opts.query = { userId: currentUserId };
       }
     }
-  }, [currentUserId]); 
+  }, [currentUserId]);
 
- 
+  if (socket) {
+    socket.on("error", (data: any) => {
+      toast.error(data.message)
+    })
+  }
 
   return (
     <>

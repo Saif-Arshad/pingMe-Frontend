@@ -11,7 +11,7 @@ export const useUser = () => {
     const [loading, SetLoading] = useState(false)
     const navigate = useNavigate()
 
-    const registerUser = async (data: registerProps, action: any, Image: string,randomBannerLink:string) => {
+    const registerUser = async (data: registerProps, action: any, Image: string, randomBannerLink: string) => {
         const payload = {
             ...data,
             profileImage: Image,
@@ -39,9 +39,10 @@ export const useUser = () => {
             const res = await axiosInstance.post("/api/users/login", data)
             if (res) {
                 toast.success("Login successfully")
-                navigate("/chat")
                 action.resetForm()
                 localStorage.setItem("pingMe_token", res.data.token)
+                // navigate("/")
+                navigate(0);
             }
         } catch (error: any) {
             toast.error(error.response.data.message ? error.response.data.message : "Something went wrong")
