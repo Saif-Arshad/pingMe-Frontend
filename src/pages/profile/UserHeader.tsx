@@ -62,10 +62,11 @@ function UserHeader() {
     };
 
     const handleSaveProfile = () => {
-        // Add logic to save profile changes (e.g., dispatch an action to update the user profile in the backend)
         onClose();
     };
-
+    if (!userData) {
+        return
+    }
 
     return (
         <section className="relativepb-4 max-h-screen">

@@ -25,6 +25,8 @@ export const useUser = () => {
                 navigate("/chat")
                 action.resetForm()
                 localStorage.setItem("pingMe_token", res.data.token)
+                navigate(0);
+
             }
         } catch (error: any) {
             toast.error(error.response.data.message ? error.response.data.message : "Something went wrong")

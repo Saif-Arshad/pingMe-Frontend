@@ -72,6 +72,16 @@ function App() {
     socket.on("error", (data: any) => {
       toast.error(data.message)
     })
+    // socket.on("block", (data: any) => {
+    //   const { currentUserId } = data
+    //   dispatch(blockUsers(currentUserId))
+
+    // })
+    // socket.on("unBlock", (data: any) => {
+    //   const { currentUserId } = data
+    //   dispatch(unBlockUsers(currentUserId))
+
+    // })
   }
 
   return (
