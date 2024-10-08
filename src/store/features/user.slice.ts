@@ -129,7 +129,28 @@ const getUser = createSlice({
         unArchiveMessages: (state: any, action: any) => {
             state.currentUser.archiveUser = state.currentUser.archiveUser.filter((id: any) => id !== action.payload);
             console.log(state.currentUser)
-        }
+        },
+        updateProfile: (state: any, action: any) => {
+            // Extract relevant fields from the payload
+            const { profileImage, bannerImage, profileName } = action.payload.data;
+            console.log("🚀 ~ bannerImage:", bannerImage)
+            console.log("🚀 ~ profileName:", profileName)
+            console.log("🚀 ~ profileImage:", profileImage)
+            console.log("🚀 ~ profileImage:", state.currentUser.profileImage)
+            console.log("🚀 ~ profileImage:", state.currentUser.bannerImage)
+            console.log("🚀 ~ profileImage:", state.currentUser.profileName)
+
+            // Update the current user's profile details
+            if (state.currentUser) {
+                state.currentUser.profileImage = profileImage;
+                state.currentUser.bannerImage = bannerImage;
+                state.currentUser.profileName = profileName;
+            }
+
+            console.log("Updated currentUser:", state.currentUser);
+            console.log("Action payload:", action.payload);
+        },
+
     },
     extraReducers: (builder) => {
         builder.addCase(getCurrentUser.pending, (state) => {
@@ -170,6 +191,6 @@ const getUser = createSlice({
     },
 });
 
-export const { joinRoom, unBlockUsers, unArchiveMessages, newMessage, archiveUsers, deleteRoom, blockUsers } = getUser.actions;
+export const { joinRoom, unBlockUsers, unArchiveMessages, updateProfile, newMessage, archiveUsers, deleteRoom, blockUsers } = getUser.actions;
 
 export default getUser.reducer;

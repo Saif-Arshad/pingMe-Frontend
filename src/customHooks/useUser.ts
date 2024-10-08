@@ -2,6 +2,8 @@ import toast from "react-hot-toast";
 import axiosInstance from "../utils/axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { updateProfile } from "../store/features/user.slice";
 interface registerProps {
     email: string;
     userName: string;
@@ -10,7 +12,7 @@ interface registerProps {
 export const useUser = () => {
     const [loading, SetLoading] = useState(false)
     const navigate = useNavigate()
-
+    const dispatch = useDispatch()
     const registerUser = async (data: registerProps, action: any, Image: string, randomBannerLink: string) => {
         const payload = {
             ...data,
@@ -67,11 +69,48 @@ export const useUser = () => {
             toast.error(error.response.data.message ? error.response.data.message : "Something went wrong")
         }
     }
+    const updateUserProfile = async (userId: string, profileData: any, onClose: any) => {
+        console.log("🚀 ~ updateUserProfile ~ profileData:", profileData);
+        try {
+            SetLoading(true);
+
+            const formData = new FormData();
+            formData.append("profileName", profileData.profileName);
+
+            // Ensure we're appending File objects, not URLs or strings
+            if (profileData.profileImage instanceof File) {
+                formData.append("profileImage", profileData.profileImage);
+            }
+            if (profileData.bannerImage instanceof File) {
+                formData.append("bannerImage", profileData.bannerImage);
+            }
+
+            const res = await axiosInstance.patch(`/api/users/${userId}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+
+            if (res.data.success) {
+                toast.success("Profile updated successfully");
+                dispatch(updateProfile(res.data))
+                // Optionally refresh or update the page with the new profile data
+                onClose()
+            } else {
+                toast.error(res.data.message || "Failed to update profile");
+            }
+        } catch (error: any) {
+            toast.error(error.response?.data?.message ? error.response.data.message : "Something went wrong");
+        } finally {
+            SetLoading(false);
+        }
+    };
 
     return {
         registerUser,
         loading,
         loginUser,
+        updateUserProfile,
         logOutUser
     }
 }
