@@ -132,7 +132,7 @@ const Main = ({ socket, isPreview, setIsPreview }: any) => {
         setIsPreview(false)
     }
     return (
-        <div className={` ${isPreview ? "flex" : "hidden"}  md:flex flex-col max-h-screen mb-4 relative w-full bg-white`}>
+        <div className={` ${isPreview ? "flex" : "hidden"}  md:flex flex-col h-screen mb-4 relative w-full bg-white`}>
             {(loading || allMessage) ? (
                 <div className='flex flex-col'>
 
@@ -157,39 +157,60 @@ const Main = ({ socket, isPreview, setIsPreview }: any) => {
                     <AiPreview chat={chat} allMessage={allMessage} loading={loading} />
                 </div>
             ) : (
-                <div className='pl-4 xl:pl-6 2xl:pl-32'>
-                    <div className="mt-12 2xl:mt-20 mb-5 2xl:mb-8 font-medium text-gray-400 px-3">
-                        {/* <img
+                <div className='flex flex-col'>
+
+                    <div className='w-full px-5 flex items-center max-h-[60px] min-h-[60px] bg-[#f5f5f5]  '>
+                        <div className="flex md:hidden" onClick={handleBack}>
+                            <ChevronLeft className="h-8 w-8 mr-2" />
+                        </div>
+                        <div className='flex items-center'>
+
+                            <img
+                                className="h-10 w-10 rounded-full object-contain"
+                                src={aiImage}
+                                alt="AI"
+                            />
+                            <div className='flex flex-col'>
+                                <h3 className='font-medium text-gray-600 ml-3'>Ping Me</h3>
+                                <span className='text-green-700 text-xs ml-3'>Online</span>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div className='pl-4 xl:pl-6 2xl:pl-32'>
+                        <div className="mt-12 2xl:mt-20 mb-5 2xl:mb-8 font-medium text-gray-400 px-3">
+                            {/* <img
                             className='h-auto w-16 2xl:w-20 pb-3 2xl:pb-5 mix-blend-multiply'
                             src={aiImage}
                         /> */}
-                        <p
-                            className="bg-clip-text font-bold text-4xl lg:text-5xl 2xl:text-6xl text-transparent bg-gradient-to-r from-[#21978B] via-[#306d81] to-[#21978B]">
-                            {data.header.title}
-                        </p>
-                        <p
-                            style={{
-                                fontFamily: "italic_eiko"
-                            }}
-                            className="text-3xl 2xl:text-5xl text-[#c4c7c5] mt-2">{data.header.subtitle}</p>
-                    </div>
-                    <div className="flex gap-4 p-3 mt-2 2xl:mt-10">
-                        {randomCards.map((card, index) => (
-                            <div
-                                onClick={() => setCurrentCard(card.text)}
-                                key={index}
-                                className="min-h-[150px] w-[200px] xl:w-[210px] 2xl:w-[300px] group p-4 bg-slate-100 rounded-lg relative cursor-pointer hover:bg-slate-200 flex flex-col gap-4"
-                            >
-                                <p className="text-gray-600 text-base 2xl:text-lg">{card.text}</p>
-                                <div className="text-gray-500 group-hover:text-white text-sm 2xl:text-base group-hover:bg-[#21978B] transition-all absolute bottom-3 right-3 bg-slate-200 rounded-full p-2">
-                                    {React.createElement(card.icon, { size: 23 })}
+                            <p
+                                className="bg-clip-text font-bold text-4xl lg:text-5xl 2xl:text-6xl text-transparent bg-gradient-to-r from-[#21978B] via-[#306d81] to-[#21978B]">
+                                {data.header.title}
+                            </p>
+                            <p
+                                style={{
+                                    fontFamily: "italic_eiko"
+                                }}
+                                className="text-3xl 2xl:text-5xl text-[#c4c7c5] mt-2">{data.header.subtitle}</p>
+                        </div>
+                        <div className="flex flex-wrap gap-4 items-center justify-center p-3 mt-16 sm:mt-2 2xl:mt-10">
+                            {randomCards.map((card, index) => (
+                                <div
+                                    onClick={() => setCurrentCard(card.text)}
+                                    key={index}
+                                    className="min-h-[130px] sm:min-h-[150px] w-5/12 sm:w-[200px] xl:w-[210px] 2xl:w-[300px] group p-4 bg-slate-100 rounded-lg relative cursor-pointer hover:bg-slate-200 flex flex-col gap-4"
+                                >
+                                    <p className="text-gray-600 text-sm sm:text-base 2xl:text-lg">{card.text}</p>
+                                    <div className="text-gray-500 group-hover:text-white text-sm 2xl:text-base group-hover:bg-[#21978B] transition-all absolute bottom-3 right-3 bg-slate-200 rounded-full p-2">
+                                        {React.createElement(card.icon, { size: 23 })}
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
+                            ))}
+                        </div>
                     </div>
                 </div>
             )}
-            <div className="absolute bottom-0 w-full px-5 mx-auto">
+            <div className="absolute bottom-1 w-full px-5 mx-auto">
                 <ChatInput setChat={setChat} />
                 <p className="mt-3 text-center text-sm font-light text-gray-600">
                     Ping me may display inaccurate info, including about people, so double-check its responses.

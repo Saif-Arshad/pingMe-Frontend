@@ -33,7 +33,7 @@ function SideIcons({ socket, isPreview, setIsPreview }: any) {
     };
 
     return (
-        <div className={`${isPreview ? "hidden" : "flex"}  md:flex max-h-screen min-h-screen`}>
+        <div className={`${isPreview ? "hidden" : "flex "} w-full  md:w-auto md:flex max-h-screen min-h-screen`}>
             <div className='bg-slate-200 min-h-full min-w-[55px] flex flex-col py-4 px-1 items-center gap-2 justify-between'>
                 <div className='flex flex-col gap-20'>
                     {users.isLoading ? (

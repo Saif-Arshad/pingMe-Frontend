@@ -174,7 +174,9 @@ function ChatSideBar({ active, socket, setIsPreview }: any) {
 
     }
     return (
-        <Box maxH="100vh" overflow={"hidden"} minH="100vh" bg="#f5f5f5" w="64" p="3" py="7" pt="4" pb="5" flexDir="column">
+        <Box
+            className='sidebar'
+        maxH="100vh" overflow={"hidden"} minH="100vh" bg="#f5f5f5" w="64" p="3" py="7" pt="4" pb="5" flexDir="column">
             <Flex flexDir="column" w="full" h={"80px"}>
                 <Flex mb="3" alignItems="center" justifyContent="space-between">
                     <h2 className="font-medium text-gray-600 flex items-center">
@@ -195,7 +197,7 @@ function ChatSideBar({ active, socket, setIsPreview }: any) {
                             </>
                         )}
                     </h2>
-                    <AIModel />
+                    <AIModel setIsPreview={setIsPreview} />
                 </Flex>
                 <div className='relative mb-3 flex items-center'>
                     <input

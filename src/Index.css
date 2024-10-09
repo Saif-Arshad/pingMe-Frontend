@@ -102,3 +102,9 @@ input:-webkit-autofill:active {
         background-position: 800px 0px;
     }
 }
+
+.sidebar {
+    @media screen and (max-width:770px) {
+        width: 100% !important;
+    }
+}

@@ -12,7 +12,7 @@ import { Search } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-function AIModel() {
+function AIModel({ setIsPreview }: any) {
     const [inputValue, setInputValue] = useState("");
     const [matchedUsers, setMatchedUsers] = useState<any[]>([]);
     const { allUsers, currentUser } = useSelector((state: any) => state.user);
@@ -36,7 +36,10 @@ function AIModel() {
         }
     }, [inputValue, allUsers, currentUser]);
 
-
+    const pickHandler = () => {
+        setIsPreview(true)
+        onClose()
+    }
     return (
         <>
             <div
@@ -96,7 +99,7 @@ function AIModel() {
                             {inputValue.trim() !== "" && matchedUsers.length > 0 ? (
                                 <div className='overflow-y-auto'>
                                     {matchedUsers.map((user: any, index: number) => (
-                                        <Link to={`/chat/@${user.username}`} key={index} onClick={() => onClose()}>
+                                        <Link to={`/chat/@${user.username}`} key={index} onClick={pickHandler}>
                                             <div className='flex items-center justify-between p-2 rounded-xl hover:bg-gray-100 cursor-pointer'>
                                                 <div className='flex items-center'>
                                                     <img src={user.profileImage || "https://res.cloudinary.com/di6r722sv/image/upload/v1727259169/7_nviboy.png"}
