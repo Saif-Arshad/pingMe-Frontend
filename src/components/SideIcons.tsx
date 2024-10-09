@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { useUser } from '../customHooks/useUser';
 import { Archive, FileLock2, MessageCircle } from 'lucide-react';
 
-function SideIcons({ socket }: any) {
+function SideIcons({ socket, isPreview, setIsPreview }: any) {
     const users = useSelector((state: any) => state.user);
     const { currentUser } = users;
     const { logOutUser } = useUser();
@@ -33,7 +33,7 @@ function SideIcons({ socket }: any) {
     };
 
     return (
-        <div className='flex max-h-screen min-h-screen'>
+        <div className={`${isPreview ? "hidden" : "flex"}  md:flex max-h-screen min-h-screen`}>
             <div className='bg-slate-200 min-h-full min-w-[55px] flex flex-col py-4 px-1 items-center gap-2 justify-between'>
                 <div className='flex flex-col gap-20'>
                     {users.isLoading ? (
@@ -85,7 +85,7 @@ function SideIcons({ socket }: any) {
                     </div>
                 </button>
             </div>
-            <ChatSideBar active={active} socket={socket} />
+            <ChatSideBar active={active} socket={socket} setIsPreview={setIsPreview} />
         </div>
     );
 }

@@ -130,6 +130,20 @@ const getUser = createSlice({
             state.currentUser.archiveUser = state.currentUser.archiveUser.filter((id: any) => id !== action.payload);
             console.log(state.currentUser)
         },
+        readMessage: (state: any, action: any) => {
+            const { sender, receiver } = action.payload;
+            const roomId = [sender, receiver].sort().join('-');
+
+            const room = state.currentUser.roomHistory.find((room: any) => room.roomId === roomId);
+
+            if (room) {
+                room.messages = room.messages.map((message: any) => ({
+                    ...message,
+                    isRead: true,
+                }));
+            }
+        },
+
         updateProfile: (state: any, action: any) => {
             // Extract relevant fields from the payload
             const { profileImage, bannerImage, profileName } = action.payload.data;
@@ -191,6 +205,6 @@ const getUser = createSlice({
     },
 });
 
-export const { joinRoom, unBlockUsers, unArchiveMessages, updateProfile, newMessage, archiveUsers, deleteRoom, blockUsers } = getUser.actions;
+export const { joinRoom, unBlockUsers, unArchiveMessages, readMessage, updateProfile, newMessage, archiveUsers, deleteRoom, blockUsers } = getUser.actions;
 
 export default getUser.reducer;

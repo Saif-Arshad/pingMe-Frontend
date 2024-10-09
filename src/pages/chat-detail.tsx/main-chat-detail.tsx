@@ -2,9 +2,10 @@ import { useDispatch, useSelector } from "react-redux";
 import SideIcons from "../../components/SideIcons";
 import ChatPreview from "../chat/chatPreview";
 import { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import ChatInput from "../../components/ChatInput";
 import { newMessage } from "../../store/features/user.slice";
+import { ChevronLeft } from "lucide-react";
 interface MainChatDetailProps {
     socket: any;
 }
@@ -15,11 +16,13 @@ function MainChatDetail({ socket }: MainChatDetailProps) {
     const [chatUser, setChatUser] = useState<any>(null);
     const [chat, setChat] = useState<string>('');
     const dispatch = useDispatch();
+    const [isPreview, setIsPreview] = useState(false)
     const [messages, setMessages] = useState<any[]>([]);
     const [isOnline, setIsOnline] = useState<boolean>(false);
     const [isBlocked, setIsBlocked] = useState<boolean>(false);
     const location = useLocation();
     const currentLocation = location.pathname;
+    const navigate = useNavigate()
     const currentUserMessages = currentUser?.roomHistory?.filter((item: any) => item.roomId === [chatUser?._id, currentUser._id].sort().join('-'))[0]?.messages || [];
     console.log("🚀 ~ currentUserMessages:", currentUserMessages)
     // Extract chat username from the current location
@@ -121,17 +124,28 @@ function MainChatDetail({ socket }: MainChatDetailProps) {
             };
             console.log("🚀 ~ useEffect ~ messageData:", messageData)
 
-            socket.emit('private_message', messageData); 
-            setChat(''); 
+            socket.emit('private_message', messageData);
+            setChat('');
         }
     }, [chat, socket, currentUser, chatUser]);
 
+
+    const handleBack = () => {
+        navigate("/chat")
+        setIsPreview(false)
+    }
     return (
         <div className="flex">
-            <SideIcons socket={socket} />
-            <div className="flex flex-col max-h-screen mb-4 relative w-full bg-white">
+            <SideIcons socket={socket}
+                setIsPreview={setIsPreview}
+                isPreview={isPreview}
+            />
+            <div className={` ${isPreview ? "flex " : "hidden"} md:flex flex-col max-h-screen mb-4 relative w-full bg-white`}>
                 <div className="flex flex-col">
                     <div className="w-full px-5 flex items-center max-h-[60px] min-h-[60px] bg-[#f5f5f5]">
+                        <div className="flex md:hidden" onClick={handleBack}>
+                            <ChevronLeft className="h-8 w-8 mr-2" />
+                        </div>
                         <Link to={`/${chatUser && chatUser.username}`}>
                             <div className="flex items-center">
                                 <img
@@ -155,6 +169,8 @@ function MainChatDetail({ socket }: MainChatDetailProps) {
 
                     <ChatPreview messages={messages}
                         chatUser={chatUser}
+                        socket={socket}
+
                     />
                 </div>
                 <div className="absolute bottom-0 w-full px-5 mx-auto">

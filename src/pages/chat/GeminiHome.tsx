@@ -19,10 +19,12 @@ import {
     Mic,
     Rocket,
     TrendingUp,
+    ChevronLeft,
 } from 'lucide-react';
 import ChatInput from '../../components/ChatInput';
 import AiPreview from './AiPreview';
 import aiImage from '../../assets/icons/logo.png'
+import { useNavigate } from 'react-router-dom';
 const data = {
     header: {
         title: 'Hello, There.',
@@ -58,14 +60,14 @@ const getRandomCards = (cards: any, numberOfCards: number) => {
     return shuffled.slice(0, numberOfCards);
 };
 
-const Main = ({ socket }: any) => {
+const Main = ({ socket, isPreview, setIsPreview }: any) => {
     const [randomCards, setRandomCards] = useState<any[]>([]);
     const [currentCard, setCurrentCard] = useState<string>('');
     const [allMessage, setAllMessage] = useState<any>();
     const [numberOfCards, setNumberOfCards] = useState(4);
     const [chat, setChat] = useState<string>('');
     const [loading, setLoading] = useState(false);
-
+    const navigate = useNavigate()
     useEffect(() => {
         if (currentCard) {
             setChat(currentCard);
@@ -125,13 +127,19 @@ const Main = ({ socket }: any) => {
             };
         }
     }, [chat, socket]);
-
+    const handleBack = () => {
+        navigate("/chat")
+        setIsPreview(false)
+    }
     return (
-        <div className="flex flex-col max-h-screen mb-4 relative w-full bg-white">
+        <div className={` ${isPreview ? "flex" : "hidden"}  md:flex flex-col max-h-screen mb-4 relative w-full bg-white`}>
             {(loading || allMessage) ? (
                 <div className='flex flex-col'>
 
                     <div className='w-full px-5 flex items-center max-h-[60px] min-h-[60px] bg-[#f5f5f5]  '>
+                        <div className="flex md:hidden" onClick={handleBack}>
+                            <ChevronLeft className="h-8 w-8 mr-2" />
+                        </div>
                         <div className='flex items-center'>
 
                             <img

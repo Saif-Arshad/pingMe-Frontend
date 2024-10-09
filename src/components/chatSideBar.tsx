@@ -16,7 +16,7 @@ import {
     Flex,
 } from '@chakra-ui/react';
 
-function ChatSideBar({ active, socket }: any) {
+function ChatSideBar({ active, socket, setIsPreview }: any) {
     const { currentUser, allUsers, currentUserId } = useSelector((state: any) => state.user);
     const location = useLocation();
     const dispatch = useDispatch();
@@ -26,6 +26,27 @@ function ChatSideBar({ active, socket }: any) {
     const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
     const navigate = useNavigate();
     const [searchQuery, setSearchQuery] = useState<string>('');
+    const [unreadMessagesCount, setUnreadMessagesCount] = useState<{ [key: string]: number }>({});
+
+    // Update unread messages count whenever the current user or room history changes
+    useEffect(() => {
+        if (currentUser?.roomHistory) {
+            const newUnreadMessagesCount: { [key: string]: number } = {};
+
+            // Loop through each room and count the unread messages
+            currentUser.roomHistory.forEach((room: any) => {
+                const unreadCount = room.messages.filter(
+                    (message: any) => !message.isRead && message.sender !== currentUserId
+                ).length;
+
+                if (unreadCount > 0) {
+                    newUnreadMessagesCount[room.roomId] = unreadCount;
+                }
+            });
+
+            setUnreadMessagesCount(newUnreadMessagesCount);
+        }
+    }, [currentUser]);
 
     useEffect(() => {
         if (currentLocation && currentLocation.includes('@')) {
@@ -188,7 +209,7 @@ function ChatSideBar({ active, socket }: any) {
                 </div>
             </Flex>
             <Box mt="4" className="message no-scrollbar sidebar-content ">
-                <Link to="/chat">
+                <Link to="/chat" onClick={() => setIsPreview(true)}>
                     <div className={`flex gap-x-3 p-2 rounded-xl  mb-2 relative ${isChatRoute ? 'bg-slate-200' : "hover:bg-slate-100 "}`}>
 
                         <Box position="relative">
@@ -215,10 +236,10 @@ function ChatSideBar({ active, socket }: any) {
                     const isUserOnline = onlineUsers.includes(participants[0]);
 
                     if (!userDetail) return null;
-
+                    const unreadCount = unreadMessagesCount[room.roomId] || 0;
                     return (
                         <div key={index} className={`flex gap-x-3 p-2 rounded-xl mb-2 relative ${currentUserChat === userDetail.username ? 'bg-slate-200' : "hover:bg-slate-100 "}`}>
-                            <Link to={`/chat/@${userDetail.username}`} key={index} className="flex gap-2  cursor-pointer ">
+                            <Link to={`/chat/@${userDetail.username}`} key={index} onClick={() => setIsPreview(true)} className="flex gap-2  cursor-pointer ">
                                 <Box position="relative">
                                     <img
                                         src={userDetail?.profileImage || 'https://res.cloudinary.com/di6r722sv/image/upload/v1727259169/7_nviboy.png'}
@@ -237,6 +258,12 @@ function ChatSideBar({ active, socket }: any) {
                                     <p className="text-xs text-[#4F5665]">{userDetail?.email}</p>
                                 </Flex>
                             </Link>
+                            {unreadCount > 0 && (
+
+                                <span className="text-xs bg-[#21978B] text-white p-1 h-4 w-4 rounded-full flex items-center justify-center font-semibold">
+                                    {unreadCount}
+                                </span>
+                            )}
 
                             <Menu>
                                 <MenuButton

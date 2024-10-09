@@ -1,11 +1,14 @@
 import { useEffect, useRef } from 'react';
 import wavyAnimation from '../../assets/icons/Animation - 1723439951167.gif'
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { readMessage } from '../../store/features/user.slice';
+import { ThunkDispatch } from '@reduxjs/toolkit';
 
 
-function ChatPreview({ messages, chatUser }: any) {
+function ChatPreview({ messages, chatUser, socket }: any) {
     console.log("🚀 ~ messages:", messages)
+    const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
 
     const { currentUser } = useSelector((state: any) => state.user)
 
@@ -13,6 +16,21 @@ function ChatPreview({ messages, chatUser }: any) {
     useEffect(() => {
         bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages]);
+    useEffect(() => {
+        if (messages.length > 0 && chatUser && currentUser) {
+            socket.emit('markMessagesAsRead', {
+                conversationId: chatUser._id,
+                userId: currentUser._id,
+            });
+            const data = {
+                sender: chatUser._id,
+                reciever: currentUser._id
+            }
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            dispatch(readMessage(data))
+        }
+    }, [messages, chatUser, currentUser]);
     const formatTimestamp = (timestamp: Date) => {
         const now = new Date();
         const messageTime = new Date(timestamp);
@@ -56,6 +74,7 @@ function ChatPreview({ messages, chatUser }: any) {
                                 }`}
                         >
                             <div className="flex items-start space-x-2 max-w-[70%]">
+
                                 {msg.sender !== currentUser._id && (
                                     <Link to={`/${chatUser.username}`}>
 
