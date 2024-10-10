@@ -53,20 +53,32 @@ function App() {
       if (!socket) {
         const newSocket = socketIO(`${import.meta.env.VITE_BACKEND_URL}`, {
           query: { userId: currentUserId },
+          transports: ['websocket', 'polling'], // Ensure proper transport options
         });
 
         setSocket(newSocket);
 
+        // Cleanup function to handle socket disconnection when the component unmounts or currentUserId changes
         return () => {
           if (newSocket) {
             newSocket.disconnect();
           }
         };
       } else {
+        // Update the query parameters if the socket already exists
         socket.io.opts.query = { userId: currentUserId };
+        socket.connect(); // Reconnect the socket with the updated query parameters
       }
     }
-  }, [currentUserId]);
+
+    // Cleanup when component unmounts or when currentUserId changes
+    return () => {
+      if (socket) {
+        socket.disconnect();
+      }
+    };
+  }, [currentUserId, socket]);
+
 
   if (socket) {
     socket.on("error", (data: any) => {
