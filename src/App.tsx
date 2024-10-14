@@ -53,7 +53,7 @@ function App() {
       if (!socket) {
         const newSocket = socketIO(`${import.meta.env.VITE_BACKEND_URL}`, {
           query: { userId: currentUserId },
-          transports: ['websocket', 'polling'], // Ensure proper transport options
+          transports: ['websocket', 'polling'],
         });
 
         setSocket(newSocket);

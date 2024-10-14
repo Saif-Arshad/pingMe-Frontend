@@ -98,7 +98,7 @@ function AiPreview({ allMessage, chat }: any) {
                 maxHeight: 'calc(100vh - 120px)',
                 minHeight: 'calc(100vh - 120px)',
             }}
-            className="overflow-y-auto p-3 pl-32 pt-10 pb-20 no-scrollbar"
+            className="overflow-y-auto p-3 md:pl-32 pt-10 pb-20 no-scrollbar"
         >
 
             {chatData.length > 0 &&

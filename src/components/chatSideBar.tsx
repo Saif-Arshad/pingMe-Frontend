@@ -176,7 +176,7 @@ function ChatSideBar({ active, socket, setIsPreview }: any) {
     return (
         <Box
             className='sidebar'
-        maxH="100vh" overflow={"hidden"} minH="100vh" bg="#f5f5f5" w="64" p="3" py="7" pt="4" pb="5" flexDir="column">
+            maxH="100vh" overflow={"hidden"} minH="100vh" bg="#f5f5f5" w="64" p="3" py="7" pt="4" pb="5" flexDir="column">
             <Flex flexDir="column" w="full" h={"80px"}>
                 <Flex mb="3" alignItems="center" justifyContent="space-between">
                     <h2 className="font-medium text-gray-600 flex items-center">
@@ -286,8 +286,8 @@ function ChatSideBar({ active, socket, setIsPreview }: any) {
                                                 <MenuItem onClick={() => unArchive(currentUserId, userDetail._id)}>UnArchive</MenuItem>
                                                 :
                                                 <>
-                                                    <MenuItem onClick={() => blockUser(currentUserId, userDetail._id)}>Block</MenuItem>
                                                     <MenuItem onClick={() => deleteMessages(currentUserId, userDetail._id)}>Delete</MenuItem>
+                                                    <MenuItem onClick={() => blockUser(currentUserId, userDetail._id)}>Block</MenuItem>
                                                     <MenuItem onClick={() => archiveMessages(currentUserId, userDetail._id)}>Archive</MenuItem>
                                                 </>
                                     }
