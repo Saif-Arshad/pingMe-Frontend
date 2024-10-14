@@ -68,7 +68,10 @@ export const useUser = () => {
                 window.location.reload()
             }
         } catch (error: any) {
-            toast.error(error.response.data.message ? error.response.data.message : "Something went wrong")
+            console.log("🚀 ~ logOutUser ~ error:", error)
+            // toast.error(error.response.data.message ? error.response.data.message : "Something went wrong")
+            localStorage.removeItem("pingMe_token")
+            navigate("/")
         }
     }
     const updateUserProfile = async (userId: string, profileData: any, onClose: any) => {
