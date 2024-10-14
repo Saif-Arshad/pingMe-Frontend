@@ -17,7 +17,8 @@ function ChatPreview({ messages, chatUser, socket }: any) {
         bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages]);
     useEffect(() => {
-        if (messages.length > 0 && chatUser && currentUser) {
+        console.log(messages)
+        if (messages && chatUser && currentUser && socket) {
             socket.emit('markMessagesAsRead', {
                 conversationId: chatUser._id,
                 userId: currentUser._id,

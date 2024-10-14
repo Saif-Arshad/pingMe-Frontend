@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import socketIO from 'socket.io-client';
 // import LoginMain from './pages/Login/LoginMain';
 import SignInSignUp from './pages/Login/LoginMain';
-import { getAllUsers, getCurrentUser } from './store/features/user.slice';
+import { blocked, getAllUsers, getCurrentUser, unBlocked } from './store/features/user.slice';
 import { useDispatch, useSelector } from 'react-redux';
 import { ThunkDispatch } from '@reduxjs/toolkit';
 import UserProfile from './pages/profile/UserProfile';
@@ -15,7 +15,6 @@ import {
 import MainChat from './pages/chat/MainChat';
 import { ProtectedRoutes } from './utils/protectedRoutes';
 import MainChatDetail from './pages/chat-detail.tsx/main-chat-detail';
-import toast from 'react-hot-toast';
 
 
 function App() {
@@ -81,19 +80,17 @@ function App() {
 
 
   if (socket) {
-    socket.on("error", (data: any) => {
-      toast.error(data.message)
+    // socket.on("error", (data: any) => {
+    //   toast.error(data.message)
+    // })
+    socket.on("block", (data: any) => {
+      dispatch(blocked(data))
+
     })
-    // socket.on("block", (data: any) => {
-    //   const { currentUserId } = data
-    //   dispatch(blockUsers(currentUserId))
+    socket.on("unBlock", (data: any) => {
+      dispatch(unBlocked(data))
 
-    // })
-    // socket.on("unBlock", (data: any) => {
-    //   const { currentUserId } = data
-    //   dispatch(unBlockUsers(currentUserId))
-
-    // })
+    })
   }
 
   return (

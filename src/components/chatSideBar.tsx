@@ -274,7 +274,7 @@ function ChatSideBar({ active, socket, setIsPreview }: any) {
                                     <p className="text-xs text-[#4F5665]">{userDetail?.email}</p>
                                 </Flex>
                             </div>
-                            {unreadCount > 0 && (
+                            {(unreadCount > 0 && currentUserChat !== userDetail?.username) && (
 
                                 <span className="text-xs bg-[#21978B] text-white p-1 h-4 w-4 rounded-full flex items-center justify-center font-semibold">
                                     {unreadCount}

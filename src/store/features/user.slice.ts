@@ -104,6 +104,44 @@ const getUser = createSlice({
                 console.log("User is already in the blockList.");
             }
         },
+        blocked: (state: any, action: any) => {
+            const { currentUserId, userId } = action.payload;
+
+            const currentUser = state.allUsers.find((user: any) => user._id === currentUserId);
+
+            if (currentUser) {
+                if (!currentUser.blockList) {
+                    currentUser.blockList = [];
+                }
+
+                if (!currentUser.blockList.includes(userId)) {
+                    currentUser.blockList.push(userId);
+                    console.log(`User ${userId} has been blocked.`);
+                } else {
+                    console.log("User is already in the blockList.");
+                }
+            } else {
+                console.error("Current user not found.");
+            }
+        },
+        unBlocked: (state: any, action: any) => {
+            const { currentUserId, userId } = action.payload;
+
+            const currentUser = state.allUsers.find((user: any) => user._id === currentUserId);
+
+            if (currentUser) {
+                if (currentUser.blockList) {
+                    currentUser.blockList = currentUser.blockList.filter((blockedId: string) => blockedId !== userId);
+                    console.log(`User ${userId} has been unblocked.`);
+                } else {
+                    console.log("User has no blockList.");
+                }
+            } else {
+                console.error("Current user not found.");
+            }
+        },
+
+
 
         unBlockUsers: (state: any, action: any) => {
             console.log(action.payload);
@@ -205,6 +243,6 @@ const getUser = createSlice({
     },
 });
 
-export const { joinRoom, unBlockUsers, unArchiveMessages, readMessage, updateProfile, newMessage, archiveUsers, deleteRoom, blockUsers } = getUser.actions;
+export const { joinRoom, unBlockUsers, blocked, unBlocked, unArchiveMessages, readMessage, updateProfile, newMessage, archiveUsers, deleteRoom, blockUsers } = getUser.actions;
 
 export default getUser.reducer;
