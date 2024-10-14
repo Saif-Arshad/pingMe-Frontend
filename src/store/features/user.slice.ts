@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axiosInstance from "../../utils/axios";
+import toast from "react-hot-toast";
 
 
 interface InitialState {
@@ -60,7 +61,6 @@ const getUser = createSlice({
 
             if (state.currentUser && state.currentUser.roomHistory) {
                 const payload = action.payload;
-                console.log("🚀 ~ payload:", payload)
 
 
 
@@ -72,7 +72,6 @@ const getUser = createSlice({
                 }
             }
 
-            console.log(state.currentUser);
         },
         newMessage: (state: any, action: any) => {
 
@@ -83,7 +82,6 @@ const getUser = createSlice({
             }
         },
         deleteRoom: (state: any, action: any) => {
-            console.log("🚀 ~ action:", action)
             state.currentUser.roomHistory = state.currentUser.roomHistory.filter(
                 (item: any) => item.roomId !== action.payload.roomId
             );
@@ -101,7 +99,7 @@ const getUser = createSlice({
             if (!state.currentUser.blockList.includes(action.payload)) {
                 state.currentUser.blockList.push(action.payload);
             } else {
-                console.log("User is already in the blockList.");
+                console.error("User is already in the blockList.");
             }
         },
         blocked: (state: any, action: any) => {
@@ -116,7 +114,7 @@ const getUser = createSlice({
 
                 if (!currentUser.blockList.includes(userId)) {
                     currentUser.blockList.push(userId);
-                    console.log(`User ${userId} has been blocked.`);
+                    toast.success(`User ${userId} has been blocked.`);
                 } else {
                     console.log("User is already in the blockList.");
                 }
@@ -132,7 +130,6 @@ const getUser = createSlice({
             if (currentUser) {
                 if (currentUser.blockList) {
                     currentUser.blockList = currentUser.blockList.filter((blockedId: string) => blockedId !== userId);
-                    console.log(`User ${userId} has been unblocked.`);
                 } else {
                     console.log("User has no blockList.");
                 }
@@ -144,8 +141,6 @@ const getUser = createSlice({
 
 
         unBlockUsers: (state: any, action: any) => {
-            console.log(action.payload);
-            console.log(action.payload);
 
             state.currentUser.blockList = state.currentUser.blockList.filter((id: any) => id !== action.payload);
         },
@@ -161,12 +156,9 @@ const getUser = createSlice({
             } else {
                 console.log("User is already in the archive.");
             }
-            console.log(action.payload)
-            // state.currentUser = state.currentUser.archiveUsers.push(action.payload)
         },
         unArchiveMessages: (state: any, action: any) => {
             state.currentUser.archiveUser = state.currentUser.archiveUser.filter((id: any) => id !== action.payload);
-            console.log(state.currentUser)
         },
         readMessage: (state: any, action: any) => {
             const { sender, receiver } = action.payload;
@@ -185,13 +177,6 @@ const getUser = createSlice({
         updateProfile: (state: any, action: any) => {
             // Extract relevant fields from the payload
             const { profileImage, bannerImage, profileName } = action.payload.data;
-            console.log("🚀 ~ bannerImage:", bannerImage)
-            console.log("🚀 ~ profileName:", profileName)
-            console.log("🚀 ~ profileImage:", profileImage)
-            console.log("🚀 ~ profileImage:", state.currentUser.profileImage)
-            console.log("🚀 ~ profileImage:", state.currentUser.bannerImage)
-            console.log("🚀 ~ profileImage:", state.currentUser.profileName)
-
             // Update the current user's profile details
             if (state.currentUser) {
                 state.currentUser.profileImage = profileImage;
@@ -199,8 +184,6 @@ const getUser = createSlice({
                 state.currentUser.profileName = profileName;
             }
 
-            console.log("Updated currentUser:", state.currentUser);
-            console.log("Action payload:", action.payload);
         },
 
     },
@@ -214,7 +197,6 @@ const getUser = createSlice({
             state.isLoading = false;
             state.isError = false;
             state.currentUser = action.payload && action.payload.data.user;
-            console.log("🚀 ~ builder.addCase ~ currentUser:", state.currentUser)
             state.currentUserId = action.payload && action.payload.data.user._id;
         });
 

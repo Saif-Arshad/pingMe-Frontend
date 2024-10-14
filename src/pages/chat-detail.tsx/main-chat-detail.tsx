@@ -24,7 +24,6 @@ function MainChatDetail({ socket }: MainChatDetailProps) {
     const currentLocation = location.pathname;
     const navigate = useNavigate()
     const currentUserMessages = currentUser?.roomHistory?.filter((item: any) => item.roomId === [chatUser?._id, currentUser._id].sort().join('-'))[0]?.messages || [];
-    console.log("🚀 ~ currentUserMessages:", currentUserMessages)
     // Extract chat username from the current location
     useEffect(() => {
         if (currentLocation && currentLocation.includes('@')) {
@@ -36,7 +35,6 @@ function MainChatDetail({ socket }: MainChatDetailProps) {
 
     useEffect(() => {
         if (currentUserMessages) {
-            console.log("🚀 ~ useEffect ~ currentUserMessages:", currentUserMessages)
             setMessages(currentUserMessages)
         }
     }, [currentUserMessages])

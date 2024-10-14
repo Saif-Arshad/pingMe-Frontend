@@ -81,8 +81,6 @@ function ChatSideBar({ active, socket, setIsPreview }: any) {
         return new Date(lastMessageB).getTime() - new Date(lastMessageA).getTime();
     });
     const deleteMessages = (currentUserId: string, id: string) => {
-        console.log("🚀 ~ deleteMessages ~ currentUserId:", currentUserId)
-        console.log("🚀 ~ deleteMessages ~ id:", id)
         const roomId = [currentUserId, id].sort().join('-');
         const data = {
             roomId,
@@ -95,7 +93,6 @@ function ChatSideBar({ active, socket, setIsPreview }: any) {
         navigate("/chat")
 
     }
-    console.log(sortedRooms, "sorted")
     const filteredRooms = sortedRooms?.filter((room: any) => {
         const participants = room.participants.filter((user: any) => user !== currentUserId);
         if (!participants.length) return false;
@@ -307,7 +304,6 @@ function ChatSideBar({ active, socket, setIsPreview }: any) {
                                                     <MenuItem onClick={() => archiveMessages(currentUserId, userDetail._id)}>Archive</MenuItem>
                                                 </>
                                     }
-                                    {/* <MenuItem onClick={() => console.log('Add to Favorite')}>Add to Favorite</MenuItem> */}
                                 </MenuList>
                             </Menu>
                         </div>

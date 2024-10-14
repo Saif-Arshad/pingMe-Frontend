@@ -72,7 +72,6 @@ export const useUser = () => {
         }
     }
     const updateUserProfile = async (userId: string, profileData: any, onClose: any) => {
-        console.log("🚀 ~ updateUserProfile ~ profileData:", profileData);
         try {
             SetLoading(true);
 

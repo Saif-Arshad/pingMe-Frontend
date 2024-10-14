@@ -7,7 +7,6 @@ import { ThunkDispatch } from '@reduxjs/toolkit';
 
 
 function ChatPreview({ messages, chatUser, socket }: any) {
-    console.log("🚀 ~ messages:", messages)
     const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
 
     const { currentUser } = useSelector((state: any) => state.user)
@@ -17,7 +16,6 @@ function ChatPreview({ messages, chatUser, socket }: any) {
         bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages]);
     useEffect(() => {
-        console.log(messages)
         if (messages && chatUser && currentUser && socket) {
             socket.emit('markMessagesAsRead', {
                 conversationId: chatUser._id,
