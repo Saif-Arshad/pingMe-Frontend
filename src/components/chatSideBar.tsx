@@ -102,7 +102,14 @@ function ChatSideBar({ active, socket, setIsPreview }: any) {
 
         const userDetail = allUsers.find((u: any) => u._id === participants[0]);
         if (!userDetail) return false;
+        const lowerCaseQuery = searchQuery.toLowerCase();
+        const matchesSearchQuery =
+            userDetail.username.toLowerCase().includes(lowerCaseQuery) ||
+            (userDetail.profileName && userDetail.profileName.toLowerCase().includes(lowerCaseQuery)) ||
+            userDetail.email.toLowerCase().includes(lowerCaseQuery);
 
+        // First check if the user matches the search query
+        if (!matchesSearchQuery) return false;
         if (active.block) {
             return currentUser.blockList.includes(userDetail._id);
         } else if (active.archive) {
@@ -111,12 +118,7 @@ function ChatSideBar({ active, socket, setIsPreview }: any) {
             return !currentUser.blockList.includes(userDetail._id) && !currentUser.archiveUser.includes(userDetail._id);
         }
 
-        const lowerCaseQuery = searchQuery.toLowerCase();
-        return (
-            userDetail.username.toLowerCase().includes(lowerCaseQuery) ||
-            (userDetail.profileName && userDetail.profileName.toLowerCase().includes(lowerCaseQuery)) ||
-            userDetail.email.toLowerCase().includes(lowerCaseQuery)
-        );
+        return false;
     });
 
 

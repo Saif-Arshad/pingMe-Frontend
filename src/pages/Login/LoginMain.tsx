@@ -137,7 +137,14 @@ const SignInSignUp = () => {
             checkUserName();
         }
     }, [debouncedQuery]);
+    const demoAccount = () => {
+        const payload = {
+            Credential: 'demo',
+            password: '103850103',
+        }
+        loginUser(payload)
 
+    }
     return (
         <div className="container1">
             <div className="forms-container">
@@ -179,8 +186,14 @@ const SignInSignUp = () => {
                                 <div className="text-red-500 text-xs italic">{loginFormik.errors.password}</div>
                             ) : null}
                         </div>
-                        <div className='w-full items-start mt-2'>
+                        <div className='w-full items-start mt-2 flex gap-2'>
                             <input type="submit" disabled={loading} className="btn" value={` ${loading ? "Verifying..." : "Login"}`} />
+                            {
+                                !loading &&
+
+                                <input type="button" onClick={demoAccount} disabled={loading} className="btn" value={` ${loading ? "Joining..." : "Demo"}`} />
+                            }
+
                         </div>
                         {/* <p className="social-text">Or Sign in with social platforms</p> */}
                         {/* Add social icons here */}
@@ -240,8 +253,12 @@ const SignInSignUp = () => {
                                 <div className="text-red-500 text-xs italic">{signupFormik.errors.password}</div>
                             ) : null}
                         </div>
-                        <div className='w-full items-start mt-2'>
+                        <div className='w-full items-start mt-2 flex gap-2'>
                             <input type="submit" disabled={loading} className="btn" value={` ${loading ? "Joining..." : "Sign up"}`} />
+                            {
+                                !loading &&
+                                <input type="button" onClick={demoAccount} disabled={loading} className="btn" value={` ${loading ? "Demo" : "Demo"}`} />
+                            }
                         </div>
                         {/* <p className="social-text">Or Sign up with social platforms</p> */}
                         {/* Add social icons here */}

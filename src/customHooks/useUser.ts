@@ -37,13 +37,15 @@ export const useUser = () => {
 
         }
     }
-    const loginUser = async (data: any, action: any) => {
+    const loginUser = async (data: any, action?: any) => {
         try {
             SetLoading(true)
             const res = await axiosInstance.post("/api/users/login", data)
             if (res) {
                 toast.success("Login successfully")
-                action.resetForm()
+                if (action) {
+                    action.resetForm()
+                }
                 localStorage.setItem("pingMe_token", res.data.token)
                 // navigate("/")
                 navigate(0);
