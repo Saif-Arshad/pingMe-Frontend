@@ -1,6 +1,6 @@
 import { Archive, FileLock2, MessageCircle, Search, MoreVertical } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import aiImage from '../assets/icons/logo.png';
 import { useLocation } from 'react-router-dom';
 import AIModel from './AIModel';
@@ -27,8 +27,6 @@ function ChatSideBar({ active, socket, setIsPreview }: any) {
     const navigate = useNavigate();
     const [searchQuery, setSearchQuery] = useState<string>('');
     const [unreadMessagesCount, setUnreadMessagesCount] = useState<{ [key: string]: number }>({});
-
-    // Update unread messages count whenever the current user or room history changes
     useEffect(() => {
         if (currentUser?.roomHistory) {
             const newUnreadMessagesCount: { [key: string]: number } = {};
@@ -173,6 +171,22 @@ function ChatSideBar({ active, socket, setIsPreview }: any) {
         navigate("/chat")
 
     }
+    const aiClickHandler = () => {
+        setIsPreview(true)
+        navigate("/chat")
+
+    }
+    useEffect(() => {
+        if (location.pathname.includes('/chat/')) {
+            setIsPreview(true);
+        }
+    }, [location]);
+    const userClickHandler = (name: string) => {
+        navigate(`/chat/@${name}`);
+        // setTimeout(() => {
+        //     setIsPreview(true)
+        // }, 0);
+    }
     return (
         <Box
             className='sidebar'
@@ -211,8 +225,8 @@ function ChatSideBar({ active, socket, setIsPreview }: any) {
                 </div>
             </Flex>
             <Box mt="4" className="message no-scrollbar sidebar-content ">
-                <Link to="/chat" onClick={() => setIsPreview(true)}>
-                    <div className={`flex gap-x-3 p-2 rounded-xl  mb-2 relative ${isChatRoute ? 'bg-slate-200' : "hover:bg-slate-100 "}`}>
+                <div onClick={aiClickHandler}>
+                    <div className={`flex gap-x-3 p-2 rounded-xl cursor-pointer  mb-2 relative ${isChatRoute ? 'bg-slate-200' : "hover:bg-slate-100 "}`}>
 
                         <Box position="relative">
                             <img className="h-12 w-auto" src={aiImage} alt="Ping Me" />
@@ -228,7 +242,7 @@ function ChatSideBar({ active, socket, setIsPreview }: any) {
                             <p className="text-xs text-[#4F5665]">Your Smart Chat Companion!</p>
                         </Flex>
                     </div>
-                </Link>
+                </div>
 
                 {filteredRooms?.map((room: any, index: number) => {
                     const participants = room.participants.filter((user: any) => user !== currentUserId);
@@ -241,7 +255,7 @@ function ChatSideBar({ active, socket, setIsPreview }: any) {
                     const unreadCount = unreadMessagesCount[room.roomId] || 0;
                     return (
                         <div key={index} className={`flex gap-x-3 p-2 rounded-xl mb-2 relative ${currentUserChat === userDetail.username ? 'bg-slate-200' : "hover:bg-slate-100 "}`}>
-                            <Link to={`/chat/@${userDetail.username}`} key={index} onClick={() => setIsPreview(true)} className="flex gap-2  cursor-pointer ">
+                            <div key={index} onClick={() => userClickHandler(userDetail.username)} className="flex gap-2  cursor-pointer ">
                                 <Box position="relative">
                                     <img
                                         src={userDetail?.profileImage || 'https://res.cloudinary.com/di6r722sv/image/upload/v1727259169/7_nviboy.png'}
@@ -259,7 +273,7 @@ function ChatSideBar({ active, socket, setIsPreview }: any) {
                                     </p>
                                     <p className="text-xs text-[#4F5665]">{userDetail?.email}</p>
                                 </Flex>
-                            </Link>
+                            </div>
                             {unreadCount > 0 && (
 
                                 <span className="text-xs bg-[#21978B] text-white p-1 h-4 w-4 rounded-full flex items-center justify-center font-semibold">

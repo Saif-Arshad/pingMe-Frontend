@@ -9,7 +9,7 @@ import {
 } from '@chakra-ui/react'
 import { useEffect, useState } from 'react';
 import { Search } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import {useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 function AIModel({ setIsPreview }: any) {
@@ -18,7 +18,7 @@ function AIModel({ setIsPreview }: any) {
     const { allUsers, currentUser } = useSelector((state: any) => state.user);
     console.log("🚀 ~ AIModel ~ allUsers:", allUsers)
     const { isOpen, onOpen, onClose } = useDisclosure();
-
+    const navigate = useNavigate()
     useEffect(() => {
         if (inputValue.trim() === "") {
             setMatchedUsers([]);
@@ -36,7 +36,8 @@ function AIModel({ setIsPreview }: any) {
         }
     }, [inputValue, allUsers, currentUser]);
 
-    const pickHandler = () => {
+    const pickHandler = (name:string) => {
+        navigate(`/chat/@${name}`)
         setIsPreview(true)
         onClose()
     }
@@ -99,7 +100,7 @@ function AIModel({ setIsPreview }: any) {
                             {inputValue.trim() !== "" && matchedUsers.length > 0 ? (
                                 <div className='overflow-y-auto'>
                                     {matchedUsers.map((user: any, index: number) => (
-                                        <Link to={`/chat/@${user.username}`} key={index} onClick={pickHandler}>
+                                        <div  key={index} onClick={() => pickHandler(user.username)}>
                                             <div className='flex items-center justify-between p-2 rounded-xl hover:bg-gray-100 cursor-pointer'>
                                                 <div className='flex items-center'>
                                                     <img src={user.profileImage || "https://res.cloudinary.com/di6r722sv/image/upload/v1727259169/7_nviboy.png"}
@@ -111,7 +112,7 @@ function AIModel({ setIsPreview }: any) {
                                                     </div>
                                                 </div>
                                             </div>
-                                        </Link>
+                                        </div>
                                     ))}
                                 </div>
                             ) : inputValue.trim() !== "" ? (
