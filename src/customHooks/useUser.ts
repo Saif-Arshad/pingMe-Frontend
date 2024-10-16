@@ -64,8 +64,8 @@ export const useUser = () => {
             if (res) {
                 toast.success("Logout successfully")
                 localStorage.removeItem("pingMe_token")
-                navigate("/")
                 window.location.reload()
+                navigate("/account")
             }
         } catch (error: any) {
             console.log("🚀 ~ logOutUser ~ error:", error)
