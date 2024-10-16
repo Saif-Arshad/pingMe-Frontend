@@ -60,6 +60,7 @@ function ChatSideBar({ active, socket, setIsPreview }: any) {
             };
 
             const handleRoomJoined = (data: any) => {
+                console.log("ROom joined server", data)
                 dispatch(joinRoom(data));
             };
 

@@ -52,21 +52,29 @@ function MainChatDetail({ socket }: MainChatDetailProps) {
                 setIsOnline(onlineUserIds.includes(chatUser?._id));
             };
 
+
+
+            socket.on('online_users', handleOnlineUsers);
+            return () => {
+                socket.off('online_users', handleOnlineUsers);
+            };
+        }
+    }, [socket, chatUser]);
+    useEffect(() => {
+        if (socket) {
             const handleNewMessage = (message: any) => {
                 console.log("Received message from server:", message);
                 dispatch(newMessage(message))
                 // setMessages((prev) => [...prev, message]);
             };
 
-            socket.on('online_users', handleOnlineUsers);
             socket.on('newMessage', handleNewMessage);
 
             return () => {
-                socket.off('online_users', handleOnlineUsers);
                 socket.off('newMessage', handleNewMessage);
             };
         }
-    }, [socket, chatUser]);
+    }, [socket])
     // Find the chat user based on the username
     useEffect(() => {
         if (userChat && allUsers) {
@@ -98,7 +106,7 @@ function MainChatDetail({ socket }: MainChatDetailProps) {
                 receiver: chatUser._id,
             };
             socket.emit('joinRoom', roomId);
-
+            console.log("Room Joined", roomId)
             // const roomIdChecking = [roomId.receiver, roomId.sender].sort().join('-');
             // if (Array.isArray(currentUser.roomHistory)) {
             //     const roomExists = currentUser.roomHistory.filter(

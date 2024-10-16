@@ -42,6 +42,7 @@ function App() {
           receiver: room.participants.find((p: any) => p !== currentUser._id),
         };
         socket.emit('joinRoom', roomId);
+        console.log("socket connected ", roomId)
       });
     }
   }, [currentUser, socket]);

@@ -39,7 +39,6 @@ function ChatPreview({ messages, chatUser, socket }: any) {
         const diffInDays = Math.floor(diffInHours / 24);
 
         if (diffInDays > 0) {
-            // If more than a day, show the time in 'HH:MM AM/PM' format
             return messageTime.toLocaleTimeString([], {
                 hour: '2-digit',
                 minute: '2-digit',
